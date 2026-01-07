@@ -1,0 +1,88 @@
+.home-container {
+  min-height: calc(100vh - 128px); // Account for header and footer
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background-color: var(--background);
+}
+
+.home-content {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header-section {
+  text-align: center;
+  padding: 24px 0;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.sub-title {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  margin: 0;
+}
+
+.card-section {
+  width: 100%;
+}
+
+.welcome-card {
+  width: 100%;
+  padding: 24px;
+  background-color: var(--surface);
+}
+
+.welcome-card mat-card-title {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.welcome-card mat-card-content {
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 1.75rem;
+  }
+
+  .sub-title {
+    font-size: 1rem;
+  }
+
+  .home-content {
+    gap: 24px;
+  }
+
+  .welcome-card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.5rem;
+  }
+
+  .sub-title {
+    font-size: 0.875rem;
+  }
+}
+
