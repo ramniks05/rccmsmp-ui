@@ -1,9 +1,29 @@
 <mat-toolbar color="primary" class="app-header">
   <div class="header-content">
-    <div class="header-title">
+    <div class="header-title" (click)="home()">
       <span class="title-main">{{ appTitle }}</span>
       <span class="title-sub hide-mobile">{{ fullTitle }}</span>
     </div>
+
+    <div class="login-select-wrapper">
+      <mat-form-field
+        appearance="outline"
+        class="login-dropdown"
+        [floatLabel]="myFloatLabel"
+      >
+        <mat-label>Login</mat-label>
+        <mat-select panelClass="login-panel">
+          <mat-option value="Citizen Login" (click)="login('Citizen')">Citizen Login</mat-option>
+          <mat-option value="Officer Login" (click)="login('Officer')">Officer Login</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="button-row">
+      <button mat-button class="register-btn" (click)="register()">
+        Citizen Registeration
+      </button>
+    </div>
+
   </div>
 </mat-toolbar>
-
