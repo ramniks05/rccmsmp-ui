@@ -11,6 +11,6 @@ import { Component } from '@angular/core';
 })
 export class HeaderComponent {
   appTitle = 'RCCMS';
-  fullTitle = 'Revenue Court Case Monitoring System';
+  fullTitle = 'Government of Manipur';
 }
 

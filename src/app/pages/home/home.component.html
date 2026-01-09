@@ -1,22 +1,108 @@
 <div class="home-container">
-  <div class="home-content">
-    <!-- Header Section -->
-    <section class="header-section">
-      <h1 class="main-title">{{ headerText }}</h1>
-      <p class="sub-title">{{ subText }}</p>
-    </section>
+  <!-- Top Menu Bar -->
+  <div class="top-menu-bar">
+    <div class="top-menu-content">
+      <div class="top-menu-left">
+        <a href="#" class="menu-link">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        <a href="#" class="menu-link">
+          <mat-icon>info</mat-icon>
+          <span>About Us</span>
+        </a>
+        <a href="#" class="menu-link">
+          <mat-icon>contact_support</mat-icon>
+          <span>Contact Us</span>
+        </a>
+      </div>
+      <div class="top-menu-right">
+        <span class="menu-item">
+          <mat-icon>people</mat-icon>
+          <span>Active Users: <strong>{{ activeUsers }}</strong></span>
+        </span>
+        <span class="menu-item language-selector">
+          <mat-icon>language</mat-icon>
+          <label for="langSelect">Language:</label>
+          <select id="langSelect" class="language-dropdown">
+            <option value="en">English</option>
+          </select>
+        </span>
+      </div>
+    </div>
+  </div>
 
-    <!-- Welcome Card -->
-    <section class="card-section">
-      <mat-card class="welcome-card">
-        <mat-card-header>
-          <mat-card-title>Welcome</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ welcomeMessage }}</p>
-        </mat-card-content>
-      </mat-card>
-    </section>
+  <!-- Main Content Area -->
+  <div class="main-content-area">
+    <div class="content-wrapper">
+      <div class="two-column-layout">
+        <!-- Left Column: Guidelines -->
+        <div class="guidelines-column">
+          <mat-card class="guidelines-card">
+            <mat-card-header>
+              <mat-card-title class="guidelines-title">
+                <mat-icon>info</mat-icon>
+                Guidelines
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="guidelines-content">
+              <p class="guideline-text">
+                If you are a new user, please first click on "<strong>Registration</strong>" to create your account, then proceed to "<strong>Login</strong>". If you already have an account, please follow the instructions below:
+              </p>
+              
+              <div class="login-method-guidelines">
+                <h4 class="method-title">Mobile Number Login:</h4>
+                <ol class="guidelines-list">
+                  <li>Select "<strong>Citizen</strong>" or "<strong>Operator</strong>" as your login type.</li>
+                  <li>Choose "<strong>Mobile Number</strong>" login method.</li>
+                  <li>Enter your <strong>10-digit Mobile Number</strong> in the Mobile No. field.</li>
+                  <li>Click the "<strong>Send OTP</strong>" button to receive OTP on your mobile number.</li>
+                  <li>Enter the <strong>6-digit OTP</strong> received on your mobile number.</li>
+                  <li>Enter the <strong>CAPTCHA</strong> code displayed in the image.</li>
+                  <li>Click the "<strong>Sign in</strong>" button to access your account.</li>
+                </ol>
+
+                <h4 class="method-title">Mobile/Email & Password Login:</h4>
+                <ol class="guidelines-list">
+                  <li>Select "<strong>Citizen</strong>" or "<strong>Operator</strong>" as your login type.</li>
+                  <li>Choose "<strong>Mobile/Email & Password</strong>" login method.</li>
+                  <li>Enter your <strong>Mobile Number or Email</strong> in the username field.</li>
+                  <li>Enter your <strong>Password</strong> in the password field.</li>
+                  <li>Enter the <strong>CAPTCHA</strong> code displayed in the image.</li>
+                  <li>Click the "<strong>Sign in</strong>" button to access your account.</li>
+                </ol>
+              </div>
+
+              <div class="important-notice">
+                <mat-card-header>
+                  <mat-card-title class="notice-title">
+                    <mat-icon>warning</mat-icon>
+                    Important Notice
+                  </mat-card-title>
+                </mat-card-header>
+                <p class="notice-text">
+                  Citizens applying for case registration are requested to verify all case details on the online portal before submitting their application. Ensure that all required documents are properly scanned and uploaded as per the specifications mentioned in the guidelines.
+                </p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Right Column: Login Form -->
+        <div class="login-column">
+          <mat-card class="login-card">
+            <mat-card-header>
+              <mat-card-title class="login-card-title">
+                Online Services Login
+              </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="login-card-content">
+              <app-login></app-login>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -1,0 +1,117 @@
+<div class="citizen-home-container">
+  <!-- Welcome Header -->
+  <div class="welcome-header">
+    <div class="welcome-content">
+      <h1 class="welcome-title">
+        <mat-icon class="welcome-icon">home</mat-icon>
+        Welcome, {{ userName }}!
+      </h1>
+      <p class="welcome-subtitle">Revenue Court Case Management System - Government of Manipur</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="logout()" class="logout-btn">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Quick Actions Card -->
+    <mat-card class="quick-actions-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>dashboard</mat-icon>
+          Quick Actions
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" class="action-btn">
+            <mat-icon>description</mat-icon>
+            My Cases
+          </button>
+          <button mat-raised-button color="accent" class="action-btn">
+            <mat-icon>add_circle</mat-icon>
+            New Case
+          </button>
+          <button mat-raised-button color="primary" class="action-btn">
+            <mat-icon>history</mat-icon>
+            Case History
+          </button>
+          <button mat-raised-button color="primary" class="action-btn">
+            <mat-icon>account_circle</mat-icon>
+            My Profile
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Information Cards -->
+    <div class="info-cards">
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">info</mat-icon>
+            About This System
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            The Revenue Court Case Management System helps you track and manage your revenue court cases 
+            efficiently. You can file new cases, track existing cases, view case history, and manage your profile.
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="card-icon">help</mat-icon>
+            Need Help?
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            If you need assistance with using this system, please contact the support team or visit 
+            the help section for detailed guides and FAQs.
+          </p>
+          <button mat-stroked-button color="primary" class="help-btn">
+            <mat-icon>help_outline</mat-icon>
+            Get Help
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- User Information Card -->
+    <mat-card class="user-info-card" *ngIf="userData">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>account_circle</mat-icon>
+          Account Information
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="user-info-grid">
+          <div class="info-item" *ngIf="userData.mobileNumber">
+            <span class="info-label">Mobile Number:</span>
+            <span class="info-value">{{ userData.mobileNumber }}</span>
+          </div>
+          <div class="info-item" *ngIf="userData.email">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ userData.email }}</span>
+          </div>
+          <div class="info-item" *ngIf="userData.userType">
+            <span class="info-label">User Type:</span>
+            <span class="info-value">{{ userData.userType }}</span>
+          </div>
+          <div class="info-item" *ngIf="userData.userId">
+            <span class="info-label">User ID:</span>
+            <span class="info-value">{{ userData.userId }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

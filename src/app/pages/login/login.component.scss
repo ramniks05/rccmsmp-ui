@@ -1,0 +1,297 @@
+.login-container {
+  padding: 0;
+}
+
+// User Type Selection (Radio Buttons)
+.user-type-selection {
+  text-align: center;
+  padding: 16px 0;
+  margin-bottom: 0;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+.radio-button {
+  margin: 0 8px;
+}
+
+.divider {
+  margin: 0 0 20px 0;
+  border: none;
+  border-top: 1px solid #e0e0e0;
+}
+
+// Login Method Selector
+.login-method-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.method-btn {
+  flex: 1;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 4px;
+}
+
+.method-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.method-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+// Login Form
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.required-star {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.form-field {
+  width: 100%;
+}
+
+// CAPTCHA Section
+.captcha-row {
+  align-items: flex-start;
+}
+
+.captcha-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.captcha-image {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.captcha-placeholder {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: #3445b4;
+  background-color: #fff;
+  user-select: none;
+  min-width: 160px;
+  text-align: center;
+  padding: 10px 16px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  text-decoration: line-through;
+}
+
+.refresh-btn {
+  color: var(--primary-color);
+}
+
+.refresh-btn:hover {
+  background-color: rgba(26, 84, 144, 0.1);
+}
+
+// OTP Alert Messages
+.otp-alert {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.otp-alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  
+  mat-icon {
+    color: #28a745;
+  }
+}
+
+.otp-alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  
+  mat-icon {
+    color: #dc3545;
+  }
+}
+
+// Send OTP Button
+.send-otp-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  .button-spinner {
+    display: inline-block;
+    margin-right: 4px;
+  }
+}
+
+// Button Row
+.button-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.login-button,
+.register-button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  
+  .button-spinner {
+    display: inline-block;
+    margin-right: 4px;
+  }
+}
+
+.login-button:only-child {
+  width: 100%;
+}
+
+.login-button {
+  background-color: #4CAF50 !important;
+  color: white !important;
+}
+
+.register-button {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.register-button:hover {
+  background-color: rgba(26, 84, 144, 0.1);
+}
+
+// Registration Link (removed - now using button)
+.registration-link-container {
+  display: none;
+}
+
+// Material Form Field Customization
+::ng-deep .mat-mdc-form-field {
+  margin-bottom: 8px;
+}
+
+::ng-deep .mat-mdc-tab-group {
+  border: none;
+}
+
+::ng-deep .mat-mdc-tab-header {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+// Registration Link
+.registration-link-container {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.registration-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.registration-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.registration-link:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+}
+
+// Responsive Design
+@media (max-width: 600px) {
+  .login-method-selector {
+    flex-direction: column;
+  }
+
+  .method-btn {
+    width: 100%;
+  }
+
+  .login-content {
+    padding: 16px 0;
+  }
+
+  .registration-link-container {
+    margin-top: 20px;
+  }
+}
+

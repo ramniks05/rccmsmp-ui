@@ -3,6 +3,6 @@
  */
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api' // Base API URL - Update as needed
+  apiUrl: 'http://localhost:8080/api' // Spring Boot API URL - Update port if different
 };
 

@@ -66,7 +66,7 @@ ng serve
 When the app loads successfully, you should see:
 1. **Header**: Blue toolbar with "RCCMS" title
 2. **Main Content**: 
-   - Large heading: "Revenue Court Case Monitoring System"
+   - Large heading: "Management System"
    - Subheading: "Government of Manipur"
    - A welcome card with text
 3. **Footer**: Blue footer with "NIC | Government of Manipur"
