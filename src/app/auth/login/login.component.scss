@@ -1,0 +1,41 @@
+.login-container {
+  min-height: calc(100vh - 116px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+}
+
+.login-card {
+  width: 380px;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.captcha-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.captcha-box {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 6px;
+}
