@@ -1,19 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginComponent } from './login/login.component';
-import { SharedModule } from '../shared/shared.module';
-import { AuthRoutingModule } from './auth-routing.module';
-import { CitizenRegistrationComponent } from './citizen-registration/citizen-registration.component';
 
+/**
+ * Auth Module
+ * Placeholder module for future authentication functionality
+ * Components and services for authentication will be added here
+ */
 @NgModule({
-  declarations: [
-    LoginComponent,
-    CitizenRegistrationComponent
-  ],
+  declarations: [],
   imports: [
-    CommonModule,
-    SharedModule,
-    AuthRoutingModule
+    CommonModule
   ]
 })
 export class AuthModule { }
