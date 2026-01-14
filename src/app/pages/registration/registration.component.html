@@ -1,0 +1,363 @@
+<div class="registration-page-container">
+  <div class="registration-header">
+    <h1>Citizen Registration</h1>
+    <p class="header-subtitle">Fill in your details to create a new account</p>
+    <button mat-button routerLink="/home" class="back-button" aria-label="Back to home">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back to Login</span>
+    </button>
+  </div>
+  
+  <div class="registration-container">
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      <mat-icon>check_circle</mat-icon>
+      <span>{{ successMessage }}</span>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="registration-form" [class.loading]="isLoading">
+    <!-- Personal Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Personal Information</h3>
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>First Name *</mat-label>
+          <input matInput formControlName="firstName" placeholder="Enter your first name">
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="registrationForm.get('firstName')?.hasError('required') && registrationForm.get('firstName')?.touched">
+            First name is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('firstName')?.hasError('pattern') && registrationForm.get('firstName')?.touched">
+            First name should contain only letters
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Last Name *</mat-label>
+          <input matInput formControlName="lastName" placeholder="Enter your last name">
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="registrationForm.get('lastName')?.hasError('required') && registrationForm.get('lastName')?.touched">
+            Last name is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('lastName')?.hasError('pattern') && registrationForm.get('lastName')?.touched">
+            Last name should contain only letters
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Email *</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Enter your email">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="registrationForm.get('email')?.hasError('required') && registrationForm.get('email')?.touched">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('email')?.hasError('email') && registrationForm.get('email')?.touched">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Mobile Number *</mat-label>
+          <input matInput formControlName="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10" [readonly]="isMobileVerified">
+          <mat-icon matPrefix>phone</mat-icon>
+          <mat-icon matSuffix *ngIf="isMobileVerified" class="verified-icon" color="primary">verified</mat-icon>
+          <mat-error *ngIf="registrationForm.get('mobileNumber')?.hasError('required') && registrationForm.get('mobileNumber')?.touched">
+            Mobile number is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('mobileNumber')?.hasError('pattern') && registrationForm.get('mobileNumber')?.touched">
+            Please enter a valid 10-digit mobile number
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('mobileNumber')?.hasError('serverError')">
+            {{ registrationForm.get('mobileNumber')?.errors?.['serverError'] }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Mobile Verification Section (Before Registration) -->
+      <div *ngIf="registrationForm.get('mobileNumber')?.valid && !isMobileVerified" class="mobile-verification-section">
+        <div class="mobile-verification-card">
+          <div class="verification-header">
+            <mat-icon>verified_user</mat-icon>
+            <h4>Verify Mobile Number</h4>
+          </div>
+          
+          <p class="verification-text">Please verify your mobile number before submitting the registration form.</p>
+
+          <!-- Mobile OTP Success Message -->
+          <div *ngIf="mobileOtpSuccessMessage" class="alert alert-success" role="alert">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ mobileOtpSuccessMessage }}</span>
+          </div>
+
+          <!-- Mobile OTP Error Message -->
+          <div *ngIf="mobileOtpErrorMessage" class="alert alert-error" role="alert">
+            <mat-icon>error</mat-icon>
+            <span>{{ mobileOtpErrorMessage }}</span>
+          </div>
+
+          <!-- Send OTP Button -->
+          <div *ngIf="!mobileOtpSent" class="mobile-verification-actions">
+            <button 
+              mat-raised-button 
+              color="accent" 
+              type="button" 
+              (click)="onSendMobileOtp()"
+              class="send-mobile-otp-btn"
+              [disabled]="registrationForm.get('mobileNumber')?.invalid || isSendingMobileOtp">
+              <mat-spinner *ngIf="isSendingMobileOtp" diameter="20" class="button-spinner"></mat-spinner>
+              <span *ngIf="!isSendingMobileOtp">Send OTP to Verify</span>
+              <span *ngIf="isSendingMobileOtp">Sending...</span>
+            </button>
+          </div>
+
+          <!-- OTP Verification (After OTP Sent) -->
+          <div *ngIf="mobileOtpSent && !isMobileVerified" class="mobile-otp-verification">
+            <form [formGroup]="mobileVerificationForm" (ngSubmit)="onVerifyMobileOtp()" class="mobile-otp-form">
+              <mat-form-field appearance="outline" class="form-field full-width">
+                <mat-label>Enter OTP *</mat-label>
+                <input matInput formControlName="mobileOtp" placeholder="Enter 6-digit OTP" maxlength="6" type="text" pattern="[0-9]*">
+                <mat-icon matPrefix>pin</mat-icon>
+                <mat-error *ngIf="mobileVerificationForm.get('mobileOtp')?.hasError('required') && mobileVerificationForm.get('mobileOtp')?.touched">
+                  OTP is required
+                </mat-error>
+                <mat-error *ngIf="mobileVerificationForm.get('mobileOtp')?.hasError('pattern') && mobileVerificationForm.get('mobileOtp')?.touched">
+                  OTP must be 6 digits
+                </mat-error>
+              </mat-form-field>
+
+              <div class="mobile-otp-actions">
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  type="submit" 
+                  class="verify-mobile-otp-btn"
+                  [disabled]="mobileVerificationForm.invalid || isVerifyingMobileOtp">
+                  <mat-spinner *ngIf="isVerifyingMobileOtp" diameter="20" class="button-spinner"></mat-spinner>
+                  <span *ngIf="!isVerifyingMobileOtp">Verify OTP</span>
+                  <span *ngIf="isVerifyingMobileOtp">Verifying...</span>
+                </button>
+                <button 
+                  mat-stroked-button 
+                  type="button" 
+                  (click)="resendMobileOtp()" 
+                  class="resend-mobile-otp-btn"
+                  [disabled]="isVerifyingMobileOtp || isSendingMobileOtp">
+                  Resend OTP
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Verified Status -->
+          <div *ngIf="isMobileVerified" class="mobile-verified-status">
+            <mat-icon class="verified-icon-large">check_circle</mat-icon>
+            <p class="verified-text">Mobile number verified successfully!</p>
+            <button mat-button type="button" (click)="resetMobileVerification()" class="change-mobile-btn">
+              Change Mobile Number
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Date of Birth *</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" placeholder="Select date of birth">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-icon matPrefix>calendar_today</mat-icon>
+          <mat-error *ngIf="registrationForm.get('dateOfBirth')?.hasError('required') && registrationForm.get('dateOfBirth')?.touched">
+            Date of birth is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Gender *</mat-label>
+          <mat-select formControlName="gender">
+            <mat-option value="male">Male</mat-option>
+            <mat-option value="female">Female</mat-option>
+            <mat-option value="other">Other</mat-option>
+          </mat-select>
+          <mat-icon matPrefix>wc</mat-icon>
+          <mat-error *ngIf="registrationForm.get('gender')?.hasError('required') && registrationForm.get('gender')?.touched">
+            Gender is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Address Information Section -->
+    <div class="form-section">
+      <h3 class="section-title">Address Information</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Full Address *</mat-label>
+        <textarea matInput formControlName="address" placeholder="Enter your complete address" rows="3"></textarea>
+        <mat-icon matPrefix>home</mat-icon>
+        <mat-error *ngIf="registrationForm.get('address')?.hasError('required') && registrationForm.get('address')?.touched">
+          Address is required
+        </mat-error>
+        <mat-error *ngIf="registrationForm.get('address')?.hasError('minlength') && registrationForm.get('address')?.touched">
+          Address must be at least 10 characters
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>District *</mat-label>
+          <input matInput formControlName="district" placeholder="Enter your district">
+          <mat-icon matPrefix>location_city</mat-icon>
+          <mat-error *ngIf="registrationForm.get('district')?.hasError('required') && registrationForm.get('district')?.touched">
+            District is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>PIN Code *</mat-label>
+          <input matInput formControlName="pincode" placeholder="Enter 6-digit PIN code" maxlength="6">
+          <mat-icon matPrefix>markunread_mailbox</mat-icon>
+          <mat-error *ngIf="registrationForm.get('pincode')?.hasError('required') && registrationForm.get('pincode')?.touched">
+            PIN code is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('pincode')?.hasError('pattern') && registrationForm.get('pincode')?.touched">
+            PIN code must be 6 digits
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Identity & Security Section -->
+    <div class="form-section">
+      <h3 class="section-title">Identity & Security</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Aadhar Number *</mat-label>
+        <input matInput formControlName="aadharNumber" placeholder="Enter 12-digit Aadhar number" maxlength="12">
+        <mat-icon matPrefix>badge</mat-icon>
+        <mat-error *ngIf="registrationForm.get('aadharNumber')?.hasError('required') && registrationForm.get('aadharNumber')?.touched">
+          Aadhar number is required
+        </mat-error>
+        <mat-error *ngIf="registrationForm.get('aadharNumber')?.hasError('pattern') && registrationForm.get('aadharNumber')?.touched">
+          Aadhar number must be 12 digits
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Password *</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Enter password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-hint>Must contain uppercase, lowercase, number & special character</mat-hint>
+          <mat-error *ngIf="registrationForm.get('password')?.hasError('required') && registrationForm.get('password')?.touched">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('password')?.hasError('minlength') && registrationForm.get('password')?.touched">
+            Password must be at least 8 characters
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('password')?.hasError('pattern') && registrationForm.get('password')?.touched">
+            Password must contain uppercase, lowercase, number & special character
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Confirm Password *</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" placeholder="Re-enter password">
+          <mat-icon matPrefix>lock_outline</mat-icon>
+          <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('required') && registrationForm.get('confirmPassword')?.touched">
+            Please confirm your password
+          </mat-error>
+          <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch') && registrationForm.get('confirmPassword')?.touched">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="form-actions">
+      <button mat-raised-button type="button" (click)="resetForm()" class="cancel-btn" [disabled]="isLoading">
+        Reset
+      </button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="registrationForm.invalid || isLoading" class="submit-btn">
+        <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
+        <span *ngIf="!isLoading">Register</span>
+        <span *ngIf="isLoading">Registering...</span>
+      </button>
+    </div>
+
+    <p class="form-note">* All fields marked with asterisk (*) are mandatory</p>
+  </form>
+
+  <!-- OTP Verification Section -->
+  <div *ngIf="showOtpVerification" class="otp-verification-section">
+    <mat-card class="otp-verification-card">
+      <mat-card-header>
+        <mat-card-title class="otp-verification-title">
+          <mat-icon>verified_user</mat-icon>
+          Verify Mobile Number
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="otp-instruction">
+          An OTP has been sent to your mobile number <strong>{{ registrationMobileNumber }}</strong>. 
+          Please enter the 6-digit OTP to activate your account.
+        </p>
+
+        <!-- OTP Success Message -->
+        <div *ngIf="otpSuccessMessage" class="alert alert-success" role="alert">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ otpSuccessMessage }}</span>
+        </div>
+
+        <!-- OTP Error Message -->
+        <div *ngIf="otpErrorMessage" class="alert alert-error" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ otpErrorMessage }}</span>
+        </div>
+
+        <form [formGroup]="otpVerificationForm" (ngSubmit)="onVerifyOtp()" class="otp-verification-form">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Enter OTP *</mat-label>
+            <input matInput formControlName="otp" placeholder="Enter 6-digit OTP" maxlength="6" type="text" pattern="[0-9]*">
+            <mat-icon matPrefix>pin</mat-icon>
+            <mat-error *ngIf="otpVerificationForm.get('otp')?.hasError('required') && otpVerificationForm.get('otp')?.touched">
+              OTP is required
+            </mat-error>
+            <mat-error *ngIf="otpVerificationForm.get('otp')?.hasError('pattern') && otpVerificationForm.get('otp')?.touched">
+              OTP must be 6 digits
+            </mat-error>
+          </mat-form-field>
+
+          <div class="otp-actions">
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit" 
+              class="verify-btn"
+              [disabled]="otpVerificationForm.invalid || isVerifyingOtp">
+              <mat-spinner *ngIf="isVerifyingOtp" diameter="20" class="button-spinner"></mat-spinner>
+              <span *ngIf="!isVerifyingOtp">Verify OTP</span>
+              <span *ngIf="isVerifyingOtp">Verifying...</span>
+            </button>
+            <button 
+              mat-stroked-button 
+              type="button" 
+              (click)="resendOtp()" 
+              class="resend-btn"
+              [disabled]="isVerifyingOtp">
+              Resend OTP
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  </div>
+</div>
+

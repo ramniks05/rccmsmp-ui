@@ -1,6 +1,6 @@
 # RCCMS UI
 
-Revenue Court Case Monitoring System - Government of Manipur
+Management System - Government of Manipur
 
 ## Development server
 

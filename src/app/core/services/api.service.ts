@@ -76,5 +76,143 @@ export class ApiService {
   testCall(endpoint: string): Observable<any> {
     return this.get(endpoint);
   }
+
+  /**
+   * Register a new citizen
+   * @param registrationData User registration data
+   */
+  registerCitizen(registrationData: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.post('auth/citizen/register', registrationData, headers);
+  }
+
+  /**
+   * Send OTP to mobile number
+   * @param mobileNumber Mobile number (10 digits)
+   * @param userType User type (CITIZEN or OPERATOR)
+   */
+  sendOTP(mobileNumber: string, userType: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      userType: userType
+    };
+    return this.post('auth/mobile/send-otp', body, headers);
+  }
+
+  /**
+   * Verify OTP and Login
+   * @param mobileNumber Mobile number (10 digits)
+   * @param otp 6-digit OTP code
+   * @param captcha CAPTCHA value
+   * @param captchaId CAPTCHA ID (UUID)
+   * @param userType User type (CITIZEN or OPERATOR)
+   */
+  verifyOTP(mobileNumber: string, otp: string, captcha: string, captchaId: string, userType: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      otp: otp,
+      captcha: captcha,
+      captchaId: captchaId,
+      userType: userType
+    };
+    return this.post('auth/mobile/verify-otp', body, headers);
+  }
+
+  /**
+   * Password Login
+   * @param username Mobile number or email
+   * @param password Password
+   * @param captcha CAPTCHA value
+   * @param captchaId CAPTCHA ID (UUID)
+   * @param userType User type (CITIZEN or OPERATOR)
+   */
+  passwordLogin(username: string, password: string, captcha: string, captchaId: string, userType: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      username: username,
+      password: password,
+      captcha: captcha,
+      captchaId: captchaId,
+      userType: userType
+    };
+    return this.post('auth/password/login', body, headers);
+  }
+
+  /**
+   * Verify Registration OTP
+   * @param mobileNumber Mobile number (10 digits)
+   * @param otp 6-digit OTP code
+   */
+  verifyRegistrationOTP(mobileNumber: string, otp: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      otp: otp
+    };
+    return this.post('auth/verify-registration-otp', body, headers);
+  }
+
+  /**
+   * Generate CAPTCHA
+   */
+  generateCaptcha(): Observable<any> {
+    return this.get('auth/captcha/generate');
+  }
+
+  /**
+   * Validate CAPTCHA (for testing/pre-validation)
+   * @param captchaId CAPTCHA ID (UUID)
+   * @param captchaText CAPTCHA text entered by user
+   */
+  validateCaptcha(captchaId: string, captchaText: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      captchaId: captchaId,
+      captchaText: captchaText
+    };
+    return this.post('auth/captcha/validate', body, headers);
+  }
+
+  /**
+   * Refresh JWT token using refresh token
+   * @param refreshToken Refresh token
+   */
+  refreshToken(refreshToken: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      refreshToken: refreshToken
+    };
+    return this.post('auth/refresh-token', body, headers);
+  }
+
+  /**
+   * Send OTP for registration (mobile verification during registration)
+   * @param mobileNumber Mobile number to send OTP to
+   */
+  sendRegistrationOTP(mobileNumber: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber
+    };
+    return this.post('auth/registration/send-otp', body, headers);
+  }
 }
 
