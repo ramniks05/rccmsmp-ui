@@ -18,6 +18,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 // Guards
 import { AdminGuard } from '../core/guards/admin.guard';
@@ -29,6 +32,7 @@ import { AdministrativeUnitsComponent, AdminUnitDialogComponent } from './admini
 import { OfficersComponent, OfficerDialogComponent } from './officers/officers.component';
 import { PostingsComponent, PostingDialogComponent } from './postings/postings.component';
 import { CaseTypesComponent, CaseTypeDialogComponent } from './case-types/case-types.component';
+import { FormSchemaBuilderComponent, FormFieldDialogComponent } from './form-schema-builder/form-schema-builder.component';
 
 /**
  * Routes for Admin Module
@@ -67,6 +71,11 @@ const routes: Routes = [
     path: 'case-types',
     component: CaseTypesComponent,
     canActivate: [AdminGuard]
+  },
+  {
+    path: 'form-schema-builder/:caseTypeId',
+    component: FormSchemaBuilderComponent,
+    canActivate: [AdminGuard]
   }
 ];
 
@@ -85,7 +94,9 @@ const routes: Routes = [
     PostingsComponent,
     PostingDialogComponent,
     CaseTypesComponent,
-    CaseTypeDialogComponent
+    CaseTypeDialogComponent,
+    FormSchemaBuilderComponent,
+    FormFieldDialogComponent
   ],
   imports: [
     CommonModule,
@@ -105,7 +116,10 @@ const routes: Routes = [
     MatSelectModule,
     MatCheckboxModule,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatRadioModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class AdminModule { }

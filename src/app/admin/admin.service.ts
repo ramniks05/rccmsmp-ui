@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 /**
@@ -286,7 +287,7 @@ export class AdminService {
    * Get All Case Types
    */
   getAllCaseTypes(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/case-types`, {
+    return this.http.get(`${this.baseUrl}/admin/case-types`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -304,7 +305,7 @@ export class AdminService {
    * Get Case Type by ID
    */
   getCaseTypeById(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/case-types/${id}`, {
+    return this.http.get(`${this.baseUrl}/admin/case-types/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -341,6 +342,59 @@ export class AdminService {
    */
   hardDeleteCaseType(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/case-types/${id}/hard`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ==================== Form Schema Management ====================
+
+  /**
+   * Get Form Schema for Case Type
+   */
+  getFormSchema(caseTypeId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Validate Form Data
+   */
+  validateFormData(caseTypeId: number, formData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/form-schemas/validate`, {
+      caseTypeId,
+      formData
+    }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Save/Create Form Schema
+   * TODO: Verify the actual API endpoint format
+   */
+  saveFormSchema(caseTypeId: number, schema: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, schema, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update Form Schema
+   */
+  updateFormSchema(caseTypeId: number, schema: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, schema, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ==================== Case Management ====================
+
+  /**
+   * Create Case
+   */
+  createCase(caseData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/cases`, caseData, {
       headers: this.getAuthHeaders()
     });
   }
