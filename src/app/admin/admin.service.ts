@@ -388,6 +388,64 @@ export class AdminService {
     });
   }
 
+  // ==================== Form Field Management ====================
+
+  /**
+   * Get All Fields (Including Inactive)
+   */
+  getAllFormFields(caseTypeId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/fields`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Single Field by ID
+   */
+  getFormField(fieldId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/form-schemas/fields/${fieldId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Create a single form field
+   */
+  createFormField(field: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/form-schemas/fields`, field, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update a single form field
+   */
+  updateFormField(fieldId: number, field: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/form-schemas/fields/${fieldId}`, field, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Delete a single form field
+   */
+  deleteFormField(fieldId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/form-schemas/fields/${fieldId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Reorder fields
+   */
+  reorderFields(caseTypeId: number, fieldOrders: Array<{fieldId: number, displayOrder: number}>): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/fields/reorder`, {
+      fieldOrders
+    }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // ==================== Case Management ====================
 
   /**

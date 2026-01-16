@@ -13,6 +13,7 @@ import { takeUntil } from 'rxjs/operators';
  */
 export interface FormFieldDefinition {
   id?: number;
+  caseTypeId?: number;
   fieldName: string;
   fieldLabel: string;
   fieldType: string;
@@ -25,6 +26,10 @@ export interface FormFieldDefinition {
   placeholder?: string;
   helpText?: string;
   fieldGroup?: string;
+  conditionalLogic?: string;
+  version?: number; // For conflict prevention
+  createdAt?: string;
+  updatedAt?: string;
   // Internal property for sanitized field name (used in preview)
   __sanitizedFieldName?: string;
 }
@@ -133,6 +138,12 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
             this.formSchema = apiResponse.data;
             if (this.formSchema) {
               this.caseTypeName = this.formSchema.caseTypeName || this.formSchema.caseTypeCode || 'Case Type';
+              
+              // Ensure fields are sorted by displayOrder
+              if (this.formSchema.fields && this.formSchema.fields.length > 0) {
+                this.formSchema.fields.sort((a, b) => a.displayOrder - b.displayOrder);
+              }
+              
               // Reset preview state when schema loads
               this.showPreview = false;
               this.previewForm = this.fb.group({}, { emitEvent: false });
@@ -209,7 +220,7 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
    * Add new field to schema
    */
   addField(field: FormFieldDefinition): void {
-    if (!this.formSchema) return;
+    if (!this.formSchema || !this.caseTypeId) return;
     
     // Ensure unique field name
     if (this.isFieldNameExists(field.fieldName)) {
@@ -220,28 +231,84 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.formSchema.fields.push(field);
-    this.formSchema.totalFields = this.formSchema.fields.length;
-    this.fieldsChanged = true;
-    this.sortFields();
-    
-    // Rebuild preview form if preview is active
-    if (this.showPreview) {
-      setTimeout(() => {
-        this.buildPreviewForm();
-      }, 0);
+    // Set display order if not set
+    if (!field.displayOrder) {
+      field.displayOrder = this.getNextDisplayOrder();
     }
-    this.cdr.markForCheck();
+
+    // Prepare field data for API
+    const fieldData: any = {
+      caseTypeId: this.caseTypeId,
+      fieldName: field.fieldName,
+      fieldLabel: field.fieldLabel,
+      fieldType: field.fieldType,
+      isRequired: field.isRequired || false,
+      displayOrder: field.displayOrder,
+      isActive: field.isActive !== undefined ? field.isActive : true,
+      defaultValue: field.defaultValue || null,
+      placeholder: field.placeholder || null,
+      helpText: field.helpText || null,
+      fieldGroup: field.fieldGroup || null,
+      fieldOptions: field.fieldOptions || null,
+      conditionalLogic: null,
+      validationRules: field.validationRules || null
+    };
+
+    // Call API to create field
+    this.loading = true;
+    this.adminService.createFormField(fieldData)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          this.loading = false;
+          const errorMessage = error.error?.message || error.message || 'Failed to create field';
+          this.snackBar.open(errorMessage, 'Close', {
+            duration: 5000,
+            panelClass: ['error-snackbar']
+          });
+          return throwError(() => error);
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          this.loading = false;
+          const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
+          if (apiResponse.success && apiResponse.data && this.formSchema && this.formSchema.fields) {
+            // Add the created field (with ID from backend) to the schema
+            this.formSchema.fields.push(apiResponse.data);
+            this.formSchema.totalFields = this.formSchema.fields.length;
+            this.fieldsChanged = true;
+            this.sortFields();
+            
+            this.snackBar.open('Field created successfully', 'Close', {
+              duration: 2000
+            });
+            
+            // Rebuild preview form if preview is active
+            if (this.showPreview) {
+              setTimeout(() => {
+                this.buildPreviewForm();
+              }, 0);
+            }
+          }
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   /**
    * Update existing field
    */
   updateField(index: number, field: FormFieldDefinition): void {
-    if (!this.formSchema) return;
+    if (!this.formSchema || !this.caseTypeId || !this.formSchema.fields) return;
+    
+    const oldField = this.formSchema.fields[index];
     
     // Check if field name changed and if new name already exists
-    const oldField = this.formSchema.fields[index];
     if (oldField.fieldName !== field.fieldName && this.isFieldNameExists(field.fieldName)) {
       this.snackBar.open('Field name already exists. Please use a unique name.', 'Close', {
         duration: 3000,
@@ -250,38 +317,161 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.formSchema.fields[index] = field;
-    this.fieldsChanged = true;
-    this.sortFields();
-    
-    // Rebuild preview form if preview is active
-    if (this.showPreview) {
-      setTimeout(() => {
-        this.buildPreviewForm();
-      }, 0);
+    // If field has an ID, it exists on backend - update it
+    if (oldField.id) {
+      // Prepare update data (only include changed fields)
+      const updateData: any = {
+        fieldLabel: field.fieldLabel,
+        fieldType: field.fieldType,
+        isRequired: field.isRequired,
+        displayOrder: field.displayOrder,
+        isActive: field.isActive,
+        defaultValue: field.defaultValue || null,
+        placeholder: field.placeholder || null,
+        helpText: field.helpText || null,
+        fieldGroup: field.fieldGroup || null,
+        fieldOptions: field.fieldOptions || null,
+        validationRules: field.validationRules || null
+      };
+
+      // Include expectedVersion if field has version (for conflict prevention)
+      if ((oldField as any).version !== undefined) {
+        updateData.expectedVersion = (oldField as any).version;
+      }
+
+      this.loading = true;
+      this.adminService.updateFormField(oldField.id, updateData)
+        .pipe(
+          takeUntil(this.destroy$),
+          catchError(error => {
+            this.loading = false;
+            let errorMessage = 'Failed to update field';
+            
+            if (error.status === 409) {
+              errorMessage = 'Field was modified by another user. Please refresh and try again.';
+            } else if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            
+            this.snackBar.open(errorMessage, 'Close', {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            });
+            
+            // Reload schema on conflict
+            if (error.status === 409 && this.caseTypeId) {
+              this.loadFormSchema(this.caseTypeId);
+            }
+            
+            return throwError(() => error);
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            this.loading = false;
+            const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
+            if (apiResponse.success && apiResponse.data && this.formSchema && this.formSchema.fields) {
+              // Update the field with response data (includes new version)
+              this.formSchema.fields[index] = apiResponse.data;
+            } else if (this.formSchema && this.formSchema.fields) {
+              // Fallback: update locally
+              this.formSchema.fields[index] = field;
+            }
+            this.fieldsChanged = true;
+            this.sortFields();
+            
+            this.snackBar.open('Field updated successfully', 'Close', {
+              duration: 2000
+            });
+            
+            // Rebuild preview form if preview is active
+            if (this.showPreview) {
+              setTimeout(() => {
+                this.buildPreviewForm();
+              }, 0);
+            }
+            this.cdr.markForCheck();
+          },
+          error: () => {
+            this.loading = false;
+            this.cdr.markForCheck();
+          }
+        });
+    } else {
+      // Field doesn't have ID yet - treat as new field
+      this.addField(field);
     }
-    this.cdr.markForCheck();
   }
 
   /**
    * Delete field from schema
    */
   deleteField(index: number): void {
-    if (!this.formSchema) return;
+    if (!this.formSchema || !this.caseTypeId || !this.formSchema.fields) return;
     
     const field = this.formSchema.fields[index];
     if (confirm(`Are you sure you want to delete field "${field.fieldLabel}"?`)) {
-      this.formSchema.fields.splice(index, 1);
-      this.formSchema.totalFields = this.formSchema.fields.length;
-      this.fieldsChanged = true;
       
-      // Rebuild preview form if preview is active
-      if (this.showPreview) {
-        setTimeout(() => {
-          this.buildPreviewForm();
-        }, 0);
+      // If field has an ID, delete from backend
+      if (field.id) {
+        this.loading = true;
+        this.adminService.deleteFormField(field.id)
+          .pipe(
+            takeUntil(this.destroy$),
+            catchError(error => {
+              this.loading = false;
+              const errorMessage = error.error?.message || error.message || 'Failed to delete field';
+              this.snackBar.open(errorMessage, 'Close', {
+                duration: 5000,
+                panelClass: ['error-snackbar']
+              });
+              return throwError(() => error);
+            })
+          )
+          .subscribe({
+            next: (response) => {
+              this.loading = false;
+              const apiResponse = response?.success !== undefined ? response : { success: true };
+              if (apiResponse.success && this.formSchema && this.formSchema.fields) {
+                // Remove field from local schema
+                this.formSchema.fields.splice(index, 1);
+                this.formSchema.totalFields = this.formSchema.fields.length;
+                this.fieldsChanged = true;
+                
+                this.snackBar.open('Field deleted successfully', 'Close', {
+                  duration: 2000
+                });
+                
+                // Rebuild preview form if preview is active
+                if (this.showPreview) {
+                  setTimeout(() => {
+                    this.buildPreviewForm();
+                  }, 0);
+                }
+              }
+              this.cdr.markForCheck();
+            },
+            error: () => {
+              this.loading = false;
+              this.cdr.markForCheck();
+            }
+          });
+      } else {
+        // Field doesn't have ID - just remove locally (wasn't saved yet)
+        if (this.formSchema && this.formSchema.fields) {
+          this.formSchema.fields.splice(index, 1);
+          this.formSchema.totalFields = this.formSchema.fields.length;
+        }
+        this.fieldsChanged = true;
+        
+        // Rebuild preview form if preview is active
+        if (this.showPreview) {
+          setTimeout(() => {
+            this.buildPreviewForm();
+          }, 0);
+        }
+        this.cdr.markForCheck();
       }
-      this.cdr.markForCheck();
     }
   }
 
@@ -289,7 +479,7 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
    * Move field up in order
    */
   moveFieldUp(index: number): void {
-    if (index === 0 || !this.formSchema) return;
+    if (index === 0 || !this.formSchema || !this.caseTypeId) return;
     const sortedFields = this.getSortedFields();
     
     // Swap display orders
@@ -297,9 +487,13 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
     sortedFields[index].displayOrder = sortedFields[index - 1].displayOrder;
     sortedFields[index - 1].displayOrder = tempOrder;
     
-    // Sort with new orders and mark as changed
+    // Sort with new orders
     this.formSchema.fields.sort((a, b) => a.displayOrder - b.displayOrder);
     this.fieldsChanged = true;
+    
+    // Update order on backend
+    this.updateFieldOrder();
+    
     this.cdr.markForCheck();
   }
 
@@ -307,7 +501,7 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
    * Move field down in order
    */
   moveFieldDown(index: number): void {
-    if (!this.formSchema) return;
+    if (!this.formSchema || !this.caseTypeId) return;
     const sortedFields = this.getSortedFields();
     
     if (index >= sortedFields.length - 1) return;
@@ -317,10 +511,51 @@ export class FormSchemaBuilderComponent implements OnInit, OnDestroy {
     sortedFields[index].displayOrder = sortedFields[index + 1].displayOrder;
     sortedFields[index + 1].displayOrder = tempOrder;
     
-    // Sort with new orders and mark as changed
+    // Sort with new orders
     this.formSchema.fields.sort((a, b) => a.displayOrder - b.displayOrder);
     this.fieldsChanged = true;
+    
+    // Update order on backend
+    this.updateFieldOrder();
+    
     this.cdr.markForCheck();
+  }
+
+  /**
+   * Update field order on backend
+   */
+  private updateFieldOrder(): void {
+    if (!this.formSchema || !this.caseTypeId) return;
+    
+    // Prepare field orders for API
+    const fieldOrders = this.formSchema.fields
+      .filter(field => field.id) // Only include fields that exist on backend
+      .map((field, index) => ({
+        fieldId: field.id!,
+        displayOrder: field.displayOrder
+      }));
+
+    if (fieldOrders.length === 0) return;
+
+    // Call API to reorder fields
+    this.adminService.reorderFields(this.caseTypeId, fieldOrders)
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(error => {
+          console.error('Failed to update field order:', error);
+          // Don't show error to user - order is updated locally anyway
+          return throwError(() => error);
+        })
+      )
+      .subscribe({
+        next: () => {
+          // Order updated successfully
+          console.log('Field order updated successfully');
+        },
+        error: () => {
+          // Silent failure - order is already updated locally
+        }
+      });
   }
 
   /**

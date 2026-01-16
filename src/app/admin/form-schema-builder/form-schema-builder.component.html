@@ -12,11 +12,6 @@
         <mat-icon>{{ showPreview ? 'edit' : 'preview' }}</mat-icon>
         {{ showPreview ? 'Edit Mode' : 'Preview' }}
       </button>
-      <button mat-raised-button color="primary" (click)="saveSchema()" [disabled]="saving || loading">
-        <mat-spinner *ngIf="saving" diameter="20" class="button-spinner"></mat-spinner>
-        <mat-icon *ngIf="!saving">save</mat-icon>
-        <span>{{ saving ? 'Saving...' : 'Save Schema' }}</span>
-      </button>
       <button mat-button (click)="onCancel()">
         <mat-icon>arrow_back</mat-icon>
         Back
