@@ -10,24 +10,29 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
+    loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule),
+    data: { breadcrumb: 'Home' }
   },
   {
     path: 'registration',
-    loadChildren: () => import('./pages/registration.module').then(m => m.RegistrationModule)
+    loadChildren: () => import('./pages/registration.module').then(m => m.RegistrationModule),
+    data: { breadcrumb: 'Registration' }
   },
   {
     path: 'citizen',
     loadChildren: () => import('./citizen/citizen.module').then(m => m.CitizenModule),
+    data: { breadcrumb: 'Citizen' },
     canActivate: [AuthGuard]
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+    data: { breadcrumb: 'Admin' }
   },
   {
     path: 'officer',
-    loadChildren: () => import('./officer/officer.module').then(m => m.OfficerModule)
+    loadChildren: () => import('./officer/officer.module').then(m => m.OfficerModule),
+    data: { breadcrumb: 'Officer' }
   },
   {
     path: '**',

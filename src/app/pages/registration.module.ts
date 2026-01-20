@@ -23,7 +23,8 @@ import { RegistrationComponent } from './registration/registration.component';
 const routes: Routes = [
   {
     path: '',
-    component: RegistrationComponent
+    component: RegistrationComponent,
+    data: { breadcrumb: 'Registration' }
   }
 ];
 

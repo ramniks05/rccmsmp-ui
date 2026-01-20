@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AdminService } from '../admin.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 /**
  * Admin Login Component
@@ -23,7 +24,8 @@ export class AdminLoginComponent {
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     // Check if already logged in
     if (this.adminService.isAdminAuthenticated()) {
@@ -86,19 +88,19 @@ export class AdminLoginComponent {
     if (token) {
       // Store admin authentication data
       localStorage.setItem('adminToken', token);
-      
+
       if (refreshToken) {
         localStorage.setItem('adminRefreshToken', refreshToken);
       }
-      
+
       // Store admin user data
       const adminData = {
         userId: responseData?.userId,
-        email: responseData?.email,
+        email: responseData?.email || 'admin@gmail.com',
         mobileNumber: responseData?.mobileNumber
       };
+      this.authService.sendData(adminData);
       localStorage.setItem('adminUserData', JSON.stringify(adminData));
-
       this.successMessage = apiResponse.message || 'Login successful! Redirecting...';
 
       // Redirect to admin dashboard

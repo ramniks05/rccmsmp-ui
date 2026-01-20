@@ -46,42 +46,50 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: AdminLoginComponent
+    component: AdminLoginComponent,
+    data: { breadcrumb: 'Login' }
   },
   {
     path: 'home',
     component: AdminHomeComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Home' }
   },
   {
     path: 'administrative-units',
     component: AdministrativeUnitsComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Administrative Units' }
   },
   {
     path: 'officers',
     component: OfficersComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Officers' }
   },
   {
     path: 'postings',
     component: PostingsComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Postings' }
   },
   {
     path: 'case-types',
     component: CaseTypesComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Case Types' }
   },
   {
     path: 'form-schema-builder/:caseTypeId',
     component: FormSchemaBuilderComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Form Schema Builder' }
   },
   {
     path: 'system-settings',
     component: SystemSettingsComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'System Settings' }
   }
 ];
 

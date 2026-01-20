@@ -6,22 +6,46 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 // Components
 import { CitizenHomeComponent } from './citizen-home/citizen-home.component';
+import { LandProcessTypesComponent } from './land-process-types/land-process-types.component';
+import { SharedModule } from '../shared/shared.module';
+import { MutationGiftSalesComponent } from './mutation-gift-sales/mutation-gift-sales.component';
+import { ServicesLayoutComponent } from './services-layout/services-layout.component';
 
 /**
  * Routes for Citizen Module
  */
+
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    component: CitizenHomeComponent,
+    data: { breadcrumb: 'Home' }
   },
   {
     path: 'home',
-    component: CitizenHomeComponent
+    component: CitizenHomeComponent,
+    data: { breadcrumb: 'Home' }
+  },
+  {
+    path: 'services',
+    data: { breadcrumb: 'Land Services' },
+    component: ServicesLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: LandProcessTypesComponent,
+        data: { breadcrumb: 'Home' },
+      },
+      {
+        path: 'mutation-gift-sales',
+        component: MutationGiftSalesComponent,
+        data: { breadcrumb: 'Mutation / Gift / Sales' }
+      }
+    ]
   }
 ];
 
@@ -31,16 +55,20 @@ const routes: Routes = [
  */
 @NgModule({
   declarations: [
-    CitizenHomeComponent
+    CitizenHomeComponent,
+    LandProcessTypesComponent,
+    MutationGiftSalesComponent,
+    ServicesLayoutComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     MatCardModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatToolbarModule,
+    SharedModule
   ]
 })
 export class CitizenModule { }
-
 

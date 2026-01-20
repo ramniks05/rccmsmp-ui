@@ -23,11 +23,13 @@ const routes: Routes = [
   {
     path: 'home',
     component: OfficerHomeComponent,
-    canActivate: [OfficerGuard]
+    canActivate: [OfficerGuard],
+    data: { breadcrumb: 'Home' }
   },
   {
     path: 'reset-password',
-    component: OfficerResetPasswordComponent
+    component: OfficerResetPasswordComponent,
+    data: { breadcrumb: 'Reset Password' }
   }
 ];
 

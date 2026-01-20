@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../../admin/admin.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 /**
  * Officer Home Component
@@ -27,7 +28,8 @@ export class OfficerHomeComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -96,12 +98,12 @@ export class OfficerHomeComponent implements OnInit {
       // Store hierarchy for future use
       if (posting.hierarchy) {
         this.hierarchy = posting.hierarchy;
-        
+
         // Extract state name
         if (posting.hierarchy.state?.unitName) {
           this.stateName = posting.hierarchy.state.unitName;
         }
-        
+
         // Extract district name
         if (posting.hierarchy.district?.unitName) {
           this.districtName = posting.hierarchy.district.unitName;
@@ -134,6 +136,7 @@ export class OfficerHomeComponent implements OnInit {
    * Logout officer
    */
   logout(): void {
+    this.authService.sendData(null);
     this.adminService.logout();
     this.router.navigate(['/home']);
   }

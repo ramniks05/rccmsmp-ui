@@ -23,7 +23,7 @@ export class CitizenHomeComponent implements OnInit {
   ngOnInit(): void {
     // Get user data from auth service
     this.userData = this.authService.getUserData();
-    
+
     // Check if user is authenticated
     if (!this.authService.isAuthenticated() || !this.userData) {
       // Redirect to login if not authenticated
@@ -47,11 +47,17 @@ export class CitizenHomeComponent implements OnInit {
     }
   }
 
+  services() {
+    this.router.navigate(["/citizen/services"])
+  }
+
   /**
    * Logout user
    */
   logout(): void {
+    this.authService.sendData(null);
     this.authService.logout();
+    this.router.navigate(['/home']);
   }
 }
 

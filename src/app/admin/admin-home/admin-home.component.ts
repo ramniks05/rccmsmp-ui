@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdminService } from '../admin.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 /**
  * Admin Home Component
@@ -17,7 +18,8 @@ export class AdminHomeComponent implements OnInit {
 
   constructor(
     private adminService: AdminService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,7 @@ export class AdminHomeComponent implements OnInit {
    * Logout admin
    */
   logout(): void {
+    this.authService.sendData(null);
     this.adminService.logout();
     this.router.navigate(['/admin/login']);
   }
