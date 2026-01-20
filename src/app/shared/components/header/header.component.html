@@ -1,29 +1,79 @@
-<mat-toolbar color="primary" class="app-header">
-  <div class="header-content">
-    <div class="header-title" (click)="home()">
-      <span class="title-main">{{ appTitle }}</span>
-      <span class="title-sub">{{ fullTitle }}</span>
-    </div>
+<div class="app-header header-wrapper">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 col-md-8 col-sm-7 col-xs-7 header-left">
+        <button mat-icon-button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
 
-    <div class="login-select-wrapper">
-      <mat-form-field
-        appearance="outline"
-        class="login-dropdown"
-        [floatLabel]="myFloatLabel"
-      >
-        <mat-label>Login</mat-label>
-        <mat-select panelClass="login-panel">
-          <mat-option value="Citizen Login" (click)="login('Citizen')">Citizen Login</mat-option>
-          <mat-option value="Officer Login" (click)="login('Officer')">Officer Login</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+        <div class="logo">
+          <a title="Go to home" class="site_logo" rel="home">
+            <img
+              class="emblem"
+              [src]="settings!.logoUrl"
+              alt="State Emblem of India"
+            />
 
-    <div class="button-row">
-      <button mat-button class="register-btn" (click)="register()">
-        Citizen Registeration
-      </button>
-    </div>
+            <div class="logo_text">
+              <span class="logo-sub-title">{{
+                settings?.logoSubheader || "Government of Manipur"
+              }}</span>
+              <span class="site_name_english">
+                {{ settings?.logoHeader || "Revenue & Settlement Department" }}
+              </span>
+              <div class="state-section" *ngIf="settings?.stateName">
+                <span class="state-name">{{ settings!.stateName }}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
 
+      <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 header-center">
+        <a
+          href="https://swachhbharat.mygov.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            class="sw-logo"
+            src="../../../../assets/swatchh-bharat.png"
+            alt="Swach Bharat"
+          />
+        </a>
+      </div>
+
+      <div class="col-lg-2 col-md-2 col-sm-3 col-xs-3 header-right">
+        <div class="header-icon" *ngIf="newCode$ | async">
+          <button
+            mat-button
+            [matMenuTriggerFor]="profileMenu"
+            class="profile-btn"
+          >
+            <img
+              class="avatar"
+              [src]="
+                'https://ui-avatars.com/api/?name=' +
+                userData?.email +
+                '&background=0D8ABC&color=fff'
+              "
+            />
+            <span class="username">{{ userData?.email | maskEmail }}</span>
+            <mat-icon style="color: #fff">arrow_drop_down</mat-icon>
+          </button>
+
+          <mat-menu #profileMenu="matMenu">
+            <button mat-menu-item (click)="goToProfile()">
+              <mat-icon>person</mat-icon>
+              <span>My Profile</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
   </div>
-</mat-toolbar>
+</div>

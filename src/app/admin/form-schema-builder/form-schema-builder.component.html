@@ -1,0 +1,218 @@
+<div class="schema-builder-container">
+  <div class="header-section">
+    <div class="header-content">
+      <h2>
+        <mat-icon>build</mat-icon>
+        Form Schema Builder
+      </h2>
+      <p class="case-type-name" *ngIf="caseTypeName">{{ caseTypeName }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="togglePreview()" [color]="showPreview ? 'primary' : ''">
+        <mat-icon>{{ showPreview ? 'edit' : 'preview' }}</mat-icon>
+        {{ showPreview ? 'Edit Mode' : 'Preview' }}
+      </button>
+      <button mat-button (click)="onCancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading form schema...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- Preview Mode -->
+  <div *ngIf="showPreview && formSchema && !loading" class="preview-container">
+    <mat-card class="preview-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>preview</mat-icon>
+          Form Preview (How Citizens Will See It)
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="!formSchema || formSchema.fields.length === 0 || !hasActiveFields()" class="preview-empty-state">
+          <mat-icon>info</mat-icon>
+          <p>No active fields to preview. Add some fields and mark them as active to see the preview.</p>
+        </div>
+        <form [formGroup]="previewForm" class="preview-form" *ngIf="formSchema && formSchema.fields.length > 0 && hasActiveFields()">
+          <ng-container *ngFor="let field of getSortedFields()">
+          <div *ngIf="field.isActive" class="preview-field">
+            
+            <!-- Use sanitized field name if available, fallback to original -->
+            <ng-container [ngSwitch]="field.fieldType">
+            
+            <!-- TEXT -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'TEXT'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <input matInput [formControlName]="field.__sanitizedFieldName || field.fieldName" [placeholder]="field.placeholder || ''">
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- NUMBER -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'NUMBER'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <input type="number" matInput [formControlName]="field.__sanitizedFieldName || field.fieldName" [placeholder]="field.placeholder || ''">
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- DATE -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'DATE'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <input type="date" matInput [formControlName]="field.__sanitizedFieldName || field.fieldName">
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- EMAIL -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'EMAIL'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <input type="email" matInput [formControlName]="field.__sanitizedFieldName || field.fieldName" [placeholder]="field.placeholder || ''">
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- PHONE -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'PHONE'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <input type="tel" matInput [formControlName]="field.__sanitizedFieldName || field.fieldName" [placeholder]="field.placeholder || ''">
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- TEXTAREA -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'TEXTAREA'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <textarea matInput [formControlName]="field.__sanitizedFieldName || field.fieldName" rows="4" [placeholder]="field.placeholder || ''"></textarea>
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- SELECT -->
+            <mat-form-field appearance="outline" *ngSwitchCase="'SELECT'" class="full-width">
+              <mat-label>{{ field.fieldLabel }}</mat-label>
+              <mat-select [formControlName]="field.__sanitizedFieldName || field.fieldName">
+                <mat-option value="">-- Select --</mat-option>
+                <mat-option *ngFor="let option of getFieldOptions(field)" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+              <mat-hint *ngIf="field.helpText">{{ field.helpText }}</mat-hint>
+            </mat-form-field>
+
+            <!-- RADIO -->
+            <div *ngSwitchCase="'RADIO'" class="radio-group-preview">
+              <label class="radio-label">{{ field.fieldLabel }}</label>
+              <mat-radio-group [formControlName]="field.__sanitizedFieldName || field.fieldName">
+                <mat-radio-button *ngFor="let option of getFieldOptions(field)" [value]="option.value">
+                  {{ option.label }}
+                </mat-radio-button>
+              </mat-radio-group>
+              <div class="help-text" *ngIf="field.helpText">{{ field.helpText }}</div>
+            </div>
+
+            <!-- CHECKBOX -->
+            <mat-checkbox *ngSwitchCase="'CHECKBOX'" [formControlName]="field.__sanitizedFieldName || field.fieldName" class="checkbox-preview">
+              {{ field.fieldLabel }}
+            </mat-checkbox>
+
+            <!-- FILE -->
+            <div *ngSwitchCase="'FILE'" class="file-preview">
+              <label class="file-label">{{ field.fieldLabel }}</label>
+              <input type="file" class="file-input">
+              <div class="help-text" *ngIf="field.helpText">{{ field.helpText }}</div>
+            </div>
+
+            </ng-container>
+
+          </div>
+          </ng-container>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Edit Mode - Field Management -->
+  <div *ngIf="!showPreview && formSchema && !loading" class="fields-management">
+    <div class="section-header">
+      <h3>
+        <mat-icon>list</mat-icon>
+        Form Fields
+      </h3>
+      <button mat-raised-button color="primary" (click)="openFieldDialog()">
+        <mat-icon>add</mat-icon>
+        Add Field
+      </button>
+    </div>
+
+    <div *ngIf="formSchema.fields.length === 0" class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>No fields added yet. Click "Add Field" to start building your form.</p>
+    </div>
+
+    <div *ngIf="formSchema.fields.length > 0" class="fields-list">
+      <mat-card *ngFor="let field of getSortedFields(); let i = index" class="field-card">
+        <mat-card-content>
+          <div class="field-info">
+            <div class="field-header">
+              <div class="field-title">
+                <mat-icon class="field-icon">{{ getFieldIcon(field.fieldType) }}</mat-icon>
+                <div>
+                  <h4>{{ field.fieldLabel }}</h4>
+                  <span class="field-name">{{ field.fieldName }}</span>
+                </div>
+              </div>
+              <div class="field-badges">
+                <span class="badge" [class.required]="field.isRequired" [class.active]="field.isActive">
+                  {{ field.isRequired ? 'Required' : 'Optional' }}
+                </span>
+                <span class="badge type-badge">{{ getFieldTypeLabel(field.fieldType) }}</span>
+                <span class="badge order-badge">Order: {{ field.displayOrder }}</span>
+              </div>
+            </div>
+            
+            <div class="field-details">
+              <div class="detail-item" *ngIf="field.placeholder">
+                <mat-icon>label</mat-icon>
+                <span>Placeholder: {{ field.placeholder }}</span>
+              </div>
+              <div class="detail-item" *ngIf="field.helpText">
+                <mat-icon>help</mat-icon>
+                <span>{{ field.helpText }}</span>
+              </div>
+              <div class="detail-item" *ngIf="field.defaultValue">
+                <mat-icon>text_fields</mat-icon>
+                <span>Default: {{ field.defaultValue }}</span>
+              </div>
+              <div class="detail-item" *ngIf="field.fieldOptions">
+                <mat-icon>list</mat-icon>
+                <span>Options: {{ getFieldOptionsDisplay(field) }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-icon-button (click)="moveFieldUp(i)" [disabled]="i === 0" matTooltip="Move Up">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button (click)="moveFieldDown(i)" [disabled]="i === getSortedFieldsCount() - 1" matTooltip="Move Down">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="openFieldDialog(field, i)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteField(i)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

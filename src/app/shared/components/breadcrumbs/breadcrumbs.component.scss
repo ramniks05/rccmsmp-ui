@@ -1,0 +1,23 @@
+.breadcrumb-wrapper {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 1% 2% 0;
+}
+
+.breadcrumb-wrapper a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.breadcrumb-wrapper span {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+mat-icon {
+  font-size: 22px;
+  margin: 0 6px;
+  color: #999;
+}
