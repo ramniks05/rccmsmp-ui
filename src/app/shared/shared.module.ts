@@ -64,7 +64,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatStepperModule,
     MatDialogModule,
     MatPaginatorModule,
-    MatTableModule,
+    MatTableModule
   ],
   exports: [
     ReactiveFormsModule,

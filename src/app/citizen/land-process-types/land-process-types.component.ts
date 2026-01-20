@@ -58,8 +58,6 @@ export class LandProcessTypesComponent {
   }
 
   openForm(caseData: any) {
-    console.log(caseData);
-
     if (!caseData?.id || !caseData?.route) {
       console.error('Invalid case data', caseData);
       return;
@@ -81,8 +79,6 @@ export class LandProcessTypesComponent {
             icon: this.caseTypeConfig[ct.code]?.icon || 'description',
             route: this.caseTypeConfig[ct.code]?.route || '/cases',
           }));
-
-        console.log('Mapped Processes:', this.processes);
       },
       error: (err) => console.error(err),
     });

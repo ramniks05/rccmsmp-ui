@@ -14,6 +14,7 @@ import { LandProcessTypesComponent } from './land-process-types/land-process-typ
 import { SharedModule } from '../shared/shared.module';
 import { ServicesLayoutComponent } from './services-layout/services-layout.component';
 import { DynamicCaseFormComponent } from './dynamic-case-form/dynamic-case-form.component';
+import { MyProfileComponent } from './my-profile/my-profile.component';
 
 /**
  * Routes for Citizen Module
@@ -29,6 +30,11 @@ const routes: Routes = [
     path: 'home',
     component: CitizenHomeComponent,
     data: { breadcrumb: 'Home' },
+  },
+  {
+    path: 'my-profile',
+    component: MyProfileComponent,
+    data: { breadcrumb: 'My Profile' },
   },
   {
     path: 'services',
@@ -59,6 +65,7 @@ const routes: Routes = [
     LandProcessTypesComponent,
     ServicesLayoutComponent,
     DynamicCaseFormComponent,
+    MyProfileComponent,
   ],
   imports: [
     CommonModule,
