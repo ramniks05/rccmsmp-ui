@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  background: #f2f4f8;
+  padding: 32px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0d3d6b;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+mat-icon {
+  font-size: 26px;
+  color: #2f5be7;
+}
+
+form {
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.required {
+  color: red;
+  margin-left: 4px;
+}
+
+/* Field spacing */
+.col-lg-4,
+.col-md-6,
+.col-sm-12 {
+  margin-bottom: 20px;
+}
+
+/* File input spacing */
+input[type='file'] {
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* Actions */
+.actions {
+  text-align: right;
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :host {
+    padding: 20px;
+  }
+
+  form {
+    padding: 20px;
+  }
+}
