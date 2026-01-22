@@ -13,9 +13,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 
 // Components
 import { RegistrationComponent } from './registration/registration.component';
+import { LawyerRegistrationComponent } from './registration/lawyer-registration/lawyer-registration.component';
+import { DynamicRegistrationFormComponent } from './registration/dynamic-registration-form/dynamic-registration-form.component';
 
 /**
  * Routes for Registration Module
@@ -24,7 +27,12 @@ const routes: Routes = [
   {
     path: '',
     component: RegistrationComponent,
-    data: { breadcrumb: 'Registration' }
+    data: { breadcrumb: 'Citizen Registration' }
+  },
+  {
+    path: 'lawyer',
+    component: LawyerRegistrationComponent,
+    data: { breadcrumb: 'Lawyer Registration' }
   }
 ];
 
@@ -34,7 +42,9 @@ const routes: Routes = [
  */
 @NgModule({
   declarations: [
-    RegistrationComponent
+    RegistrationComponent,
+    LawyerRegistrationComponent,
+    DynamicRegistrationFormComponent
   ],
   imports: [
     CommonModule,
@@ -49,7 +59,8 @@ const routes: Routes = [
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatRadioModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }

@@ -7,6 +7,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
 
 // Components
 import { CitizenHomeComponent } from './citizen-home/citizen-home.component';
@@ -15,6 +25,9 @@ import { SharedModule } from '../shared/shared.module';
 import { ServicesLayoutComponent } from './services-layout/services-layout.component';
 import { DynamicCaseFormComponent } from './dynamic-case-form/dynamic-case-form.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
+import { MyCasesComponent } from './my-cases/my-cases.component';
+import { CaseDetailsComponent } from './case-details/case-details.component';
+import { CaseResubmitComponent } from './case-resubmit/case-resubmit.component';
 
 /**
  * Routes for Citizen Module
@@ -53,6 +66,21 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'my-cases',
+    component: MyCasesComponent,
+    data: { breadcrumb: 'My Cases' },
+  },
+  {
+    path: 'cases/:id',
+    component: CaseDetailsComponent,
+    data: { breadcrumb: 'Case Details' },
+  },
+  {
+    path: 'cases/:id/resubmit',
+    component: CaseResubmitComponent,
+    data: { breadcrumb: 'Resubmit Case' },
+  },
 ];
 
 /**
@@ -66,14 +94,27 @@ const routes: Routes = [
     ServicesLayoutComponent,
     DynamicCaseFormComponent,
     MyProfileComponent,
+    MyCasesComponent,
+    CaseDetailsComponent,
+    CaseResubmitComponent,
   ],
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule.forChild(routes),
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     SharedModule,
   ],
 })

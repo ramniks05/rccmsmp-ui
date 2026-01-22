@@ -1,0 +1,23 @@
+@import '../case-details/case-details.component.scss';
+
+.case-resubmit-container {
+  min-height: calc(100vh - 128px);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+}
+
+.form-card {
+  margin-top: 24px;
+}
+
+.inline-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}

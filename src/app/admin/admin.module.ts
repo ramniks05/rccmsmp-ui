@@ -21,6 +21,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
 
 // Guards
 import { AdminGuard } from '../core/guards/admin.guard';
@@ -43,6 +44,10 @@ import { WorkflowTransitionsComponent } from './workflows/workflow-transitions/w
 import { WorkflowTransitionDialogComponent } from './workflows/workflow-transition-dialog/workflow-transition-dialog.component';
 import { WorkflowPermissionsComponent } from './workflows/workflow-permissions/workflow-permissions.component';
 import { WorkflowPermissionDialogComponent } from './workflows/workflow-permission-dialog/workflow-permission-dialog.component';
+import { RegistrationFormsComponent } from './registration-forms/registration-forms.component';
+import { RegistrationFormFieldDialogComponent } from './registration-forms/registration-form-field-dialog/registration-form-field-dialog.component';
+import { RegistrationFormGroupsComponent } from './registration-forms/registration-form-groups/registration-form-groups.component';
+import { RegistrationFormGroupDialogComponent } from './registration-forms/registration-form-groups/registration-form-group-dialog/registration-form-group-dialog.component';
 
 /**
  * Routes for Admin Module
@@ -111,6 +116,12 @@ const routes: Routes = [
     component: WorkflowBuilderComponent,
     canActivate: [AdminGuard],
     data: { breadcrumb: 'Workflow Builder' }
+  },
+  {
+    path: 'registration-forms',
+    component: RegistrationFormsComponent,
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Registration Forms' }
   }
 ];
 
@@ -141,7 +152,11 @@ const routes: Routes = [
     WorkflowTransitionsComponent,
     WorkflowTransitionDialogComponent,
     WorkflowPermissionsComponent,
-    WorkflowPermissionDialogComponent
+    WorkflowPermissionDialogComponent,
+    RegistrationFormsComponent,
+    RegistrationFormFieldDialogComponent,
+    RegistrationFormGroupsComponent,
+    RegistrationFormGroupDialogComponent
   ],
   imports: [
     CommonModule,
@@ -164,7 +179,8 @@ const routes: Routes = [
     MatSnackBarModule,
     MatRadioModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTabsModule
   ]
 })
 export class AdminModule { }

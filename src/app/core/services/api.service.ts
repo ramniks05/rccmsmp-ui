@@ -208,5 +208,107 @@ export class ApiService {
     };
     return this.post('auth/citizen/registration/send-otp', body, headers);
   }
+
+  // ==================== Lawyer Registration APIs ====================
+
+  /**
+   * Lawyer Registration
+   * @param registrationData Lawyer registration data
+   */
+  lawyerRegister(registrationData: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.post('auth/lawyer/register', registrationData, headers);
+  }
+
+  /**
+   * Send OTP for Lawyer Registration Verification
+   * @param mobileNumber Mobile number to send OTP to
+   */
+  sendLawyerRegistrationOTP(mobileNumber: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber
+    };
+    return this.post('auth/lawyer/registration/send-otp', body, headers);
+  }
+
+  /**
+   * Verify Lawyer Registration OTP
+   * @param mobileNumber Mobile number
+   * @param otp 6-digit OTP code
+   */
+  verifyLawyerRegistrationOTP(mobileNumber: string, otp: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      otp: otp
+    };
+    return this.post('auth/lawyer/registration/verify-otp', body, headers);
+  }
+
+  // ==================== Lawyer Login APIs ====================
+
+  /**
+   * Send OTP for Lawyer Login
+   * @param mobileNumber Mobile number
+   */
+  sendLawyerOTP(mobileNumber: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      citizenType: 'LAWYER'
+    };
+    return this.post('auth/lawyer/send-otp', body, headers);
+  }
+
+  /**
+   * Lawyer OTP Login
+   * @param mobileNumber Mobile number
+   * @param otp 6-digit OTP code
+   * @param captcha CAPTCHA value
+   * @param captchaId CAPTCHA ID (UUID)
+   */
+  lawyerOTPLogin(mobileNumber: string, otp: string, captcha: string, captchaId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      mobileNumber: mobileNumber,
+      otp: otp,
+      captcha: captcha,
+      captchaId: captchaId,
+      citizenType: 'LAWYER'
+    };
+    return this.post('auth/lawyer/otp-login', body, headers);
+  }
+
+  /**
+   * Lawyer Password Login
+   * @param username Mobile number or email
+   * @param password Password
+   * @param captcha CAPTCHA value
+   * @param captchaId CAPTCHA ID (UUID)
+   */
+  lawyerPasswordLogin(username: string, password: string, captcha: string, captchaId: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      username: username,
+      password: password,
+      captcha: captcha,
+      captchaId: captchaId,
+      citizenType: 'LAWYER'
+    };
+    return this.post('auth/lawyer/login', body, headers);
+  }
 }
 

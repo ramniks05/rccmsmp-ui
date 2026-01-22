@@ -1,21 +1,21 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService } from '../../core/services/api.service';
-import { DynamicRegistrationFormComponent } from './dynamic-registration-form/dynamic-registration-form.component';
+import { ApiService } from '../../../core/services/api.service';
+import { DynamicRegistrationFormComponent } from '../dynamic-registration-form/dynamic-registration-form.component';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 /**
- * Registration Component
- * Handles citizen registration with basic details
+ * Lawyer Registration Component
+ * Handles lawyer registration with dynamic form
  */
 @Component({
-  selector: 'app-registration',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss']
+  selector: 'app-lawyer-registration',
+  templateUrl: './lawyer-registration.component.html',
+  styleUrls: ['./lawyer-registration.component.scss']
 })
-export class RegistrationComponent {
+export class LawyerRegistrationComponent {
   @ViewChild(DynamicRegistrationFormComponent) dynamicForm!: DynamicRegistrationFormComponent;
   
   registrationForm: FormGroup | null = null;
@@ -42,7 +42,6 @@ export class RegistrationComponent {
       otp: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]]
     });
   }
-
 
   /**
    * Handle form submission from dynamic form component
@@ -74,41 +73,43 @@ export class RegistrationComponent {
     if (!formData) {
       return;
     }
+    
+    if (formData) {
+      // Format date fields if present
+      const registrationData: any = { ...formData };
+      
+      // Format dateOfBirth if it exists
+      if (registrationData.dateOfBirth) {
+        registrationData.dateOfBirth = this.formatDateForAPI(registrationData.dateOfBirth);
+      }
+      
+      // Format gender if it exists
+      if (registrationData.gender) {
+        registrationData.gender = registrationData.gender.toUpperCase();
+      }
 
-    // Format form data for API (handle date fields, etc.)
-    const registrationData: any = { ...formData };
-    
-    // Format date fields
-    if (registrationData.dateOfBirth) {
-      registrationData.dateOfBirth = this.formatDateForAPI(registrationData.dateOfBirth);
+      this.isLoading = true;
+      
+      // Use lawyer registration API
+      this.apiService.lawyerRegister(registrationData)
+        .pipe(
+          catchError(error => {
+            this.isLoading = false;
+            this.handleRegistrationError(error);
+            return throwError(() => error);
+          })
+        )
+        .subscribe({
+          next: (response) => {
+            this.isLoading = false;
+            this.handleRegistrationSuccess(response);
+          },
+          error: (error) => {
+            // Error already handled in catchError
+            this.isLoading = false;
+          }
+        });
     }
-    
-    // Format gender if present
-    if (registrationData.gender) {
-      registrationData.gender = registrationData.gender.toUpperCase();
-    }
-
-    this.isLoading = true;
-    
-    // Use citizen registration API
-    this.apiService.registerCitizen(registrationData)
-      .pipe(
-        catchError(error => {
-          this.isLoading = false;
-          this.handleRegistrationError(error);
-          return throwError(() => error);
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          this.handleRegistrationSuccess(response);
-        },
-        error: (error) => {
-          // Error already handled in catchError
-          this.isLoading = false;
-        }
-      });
   }
 
   /**
@@ -133,8 +134,9 @@ export class RegistrationComponent {
     const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
     const responseData = apiResponse.success ? apiResponse.data : response;
     
-    const citizenId = responseData?.citizenId || responseData?.userId;
-    const mobileNumber = this.dynamicForm?.registrationForm?.get('mobileNumber')?.value || '';
+    const lawyerId = responseData?.citizenId || responseData?.userId || responseData?.lawyerId;
+    const mobileNumber = this.dynamicForm?.registrationForm?.get('mobileNumber')?.value || 
+                         this.dynamicForm?.registrationForm?.get('mobile')?.value || '';
     const otpCode = responseData?.otpCode;
     
     // Store OTP code for development display
@@ -145,7 +147,7 @@ export class RegistrationComponent {
       console.log('OTP Code (for testing):', otpCode);
     }
     
-    this.registrationUserId = citizenId;
+    this.registrationUserId = lawyerId;
     this.registrationMobileNumber = mobileNumber;
     this.showOtpVerification = true;
     this.successMessage = apiResponse.message || 'Registration successful! OTP has been sent to your mobile number. Please enter the OTP below to activate your account.';
@@ -168,6 +170,11 @@ export class RegistrationComponent {
     // Clear previous error messages
     this.errorMessage = '';
     
+    if (!this.dynamicForm?.registrationForm) {
+      this.errorMessage = 'Form not initialized. Please refresh the page.';
+      return;
+    }
+    
     // Handle 409 Conflict - Duplicate resource
     if (error.status === 409) {
       const errorMessage = error.error?.message || error.error?.error || '';
@@ -177,47 +184,40 @@ export class RegistrationComponent {
       const messageLower = errorMessage.toLowerCase();
       if (messageLower.includes('email')) {
         specificMessage = 'This email address is already registered. Please use a different email.';
-        const emailControl = this.dynamicForm?.registrationForm?.get('email');
+        const emailControl = this.dynamicForm.registrationForm.get('email');
         if (emailControl) {
           emailControl.setErrors({ serverError: 'Email already exists' });
           emailControl.markAsTouched();
         }
       } else if (messageLower.includes('mobile')) {
         specificMessage = 'This mobile number is already registered. Please use a different mobile number.';
-        const mobileControl = this.dynamicForm?.registrationForm?.get('mobileNumber');
+        const mobileControl = this.dynamicForm.registrationForm.get('mobileNumber') || 
+                             this.dynamicForm.registrationForm.get('mobile');
         if (mobileControl) {
           mobileControl.setErrors({ serverError: 'Mobile number already exists' });
           mobileControl.markAsTouched();
         }
       } else if (messageLower.includes('aadhar')) {
         specificMessage = 'This Aadhar number is already registered. Please use a different Aadhar number.';
-        const aadharControl = this.dynamicForm?.registrationForm?.get('aadharNumber');
+        const aadharControl = this.dynamicForm.registrationForm.get('aadharNumber') ||
+                             this.dynamicForm.registrationForm.get('aadhar');
         if (aadharControl) {
           aadharControl.setErrors({ serverError: 'Aadhar number already exists' });
           aadharControl.markAsTouched();
         }
       }
       
-      this.errorMessage = errorMessage || specificMessage;
+      this.errorMessage = specificMessage;
       return;
     }
     
-    // Handle connection errors
-    if (error.status === 0) {
-      this.errorMessage = 'Unable to connect to server. Please check your connection.';
-      return;
-    }
-    
-    // Handle validation errors (400 Bad Request)
-    if (error.status === 400 && error.error) {
-      if (error.error.errors && Array.isArray(error.error.errors)) {
-        // Handle validation errors array
-        const validationErrors = error.error.errors;
-        this.errorMessage = 'Validation failed: ' + validationErrors.map((e: any) => e.message || `${e.field}: ${e.defaultMessage}`).join(', ');
-        
-        // Set form field errors
-        validationErrors.forEach((err: any) => {
-          const control = this.dynamicForm?.registrationForm?.get(err.field);
+    // Handle 400 Bad Request - Validation errors
+    if (error.status === 400) {
+      if (error.error?.errors && Array.isArray(error.error.errors)) {
+        // Handle field-specific validation errors
+        error.error.errors.forEach((err: any) => {
+          const fieldName = err.field || err.fieldName;
+          const control = this.dynamicForm.registrationForm.get(fieldName);
           if (control) {
             control.setErrors({ serverError: err.message || err.defaultMessage });
             control.markAsTouched();
@@ -259,8 +259,8 @@ export class RegistrationComponent {
       this.otpErrorMessage = '';
       this.otpSuccessMessage = '';
 
-      // Use citizen OTP verification API
-      this.apiService.verifyRegistrationOTP(this.registrationMobileNumber, otp)
+      // Use lawyer OTP verification API
+      this.apiService.verifyLawyerRegistrationOTP(this.registrationMobileNumber, otp)
         .pipe(
           catchError(error => {
             this.isVerifyingOtp = false;
@@ -318,10 +318,8 @@ export class RegistrationComponent {
       } else if (error.error.error) {
         this.otpErrorMessage = error.error.error;
       } else {
-        this.otpErrorMessage = 'OTP verification failed. Please try again.';
+        this.otpErrorMessage = 'Invalid or expired OTP. Please check and try again.';
       }
-    } else if (error.status === 0) {
-      this.otpErrorMessage = 'Unable to connect to server. Please check your connection.';
     } else if (error.status === 400) {
       this.otpErrorMessage = 'Invalid or expired OTP. Please check and try again.';
       // Clear OTP field
@@ -343,8 +341,8 @@ export class RegistrationComponent {
    */
   resendOtp(): void {
     if (this.registrationMobileNumber) {
-      // Use citizen resend OTP API
-      this.apiService.sendRegistrationOTP(this.registrationMobileNumber, 'CITIZEN')
+      // Use lawyer resend OTP API
+      this.apiService.sendLawyerRegistrationOTP(this.registrationMobileNumber)
         .pipe(
           catchError(error => {
             this.handleOtpVerificationError(error);
@@ -377,7 +375,6 @@ export class RegistrationComponent {
     }
   }
 
-
   /**
    * Reset form
    */
@@ -406,69 +403,4 @@ export class RegistrationComponent {
       control?.markAsTouched();
     });
   }
-
-  /**
-   * Get error message for form field
-   * Note: This method is kept for backward compatibility but may not be used with dynamic forms
-   */
-  getErrorMessage(controlName: string): string {
-    const control = this.dynamicForm?.registrationForm?.get(controlName);
-    
-    if (!control) return '';
-    
-    if (control.hasError('required')) {
-      return `${this.getFieldLabel(controlName)} is required`;
-    }
-    if (control.hasError('email')) {
-      return 'Please enter a valid email address';
-    }
-    if (control.hasError('pattern')) {
-      return this.getPatternErrorMessage(controlName);
-    }
-    if (control.hasError('minlength')) {
-      const requiredLength = control.errors?.['minlength'].requiredLength;
-      return `${this.getFieldLabel(controlName)} must be at least ${requiredLength} characters`;
-    }
-    if (control.hasError('passwordMismatch')) {
-      return 'Passwords do not match';
-    }
-    return '';
-  }
-
-  /**
-   * Get user-friendly field label
-   */
-  private getFieldLabel(controlName: string): string {
-    const labels: { [key: string]: string } = {
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      email: 'Email',
-      mobileNumber: 'Mobile Number',
-      dateOfBirth: 'Date of Birth',
-      gender: 'Gender',
-      address: 'Address',
-      district: 'District',
-      pincode: 'PIN Code',
-      aadharNumber: 'Aadhar Number',
-      password: 'Password',
-      confirmPassword: 'Confirm Password'
-    };
-    return labels[controlName] || controlName;
-  }
-
-  /**
-   * Get pattern-specific error message
-   */
-  private getPatternErrorMessage(controlName: string): string {
-    const messages: { [key: string]: string } = {
-      firstName: 'First name should contain only letters',
-      lastName: 'Last name should contain only letters',
-      mobile: 'Please enter a valid 10-digit mobile number',
-      pincode: 'PIN code must be 6 digits',
-      aadharNumber: 'Aadhar number must be 12 digits',
-      password: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
-    };
-    return messages[controlName] || 'Invalid format';
-  }
 }
-

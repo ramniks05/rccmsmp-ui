@@ -1,0 +1,146 @@
+<div class="case-details-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">
+        <mat-icon>description</mat-icon>
+        Case Details
+      </h1>
+      <p class="page-subtitle" *ngIf="case">{{ case.caseNumber }}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" routerLink="/citizen/my-cases" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+        Back to My Cases
+      </button>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading case details...</p>
+    </div>
+
+    <!-- Case Information -->
+    <div *ngIf="!isLoading && case" class="case-info-section">
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon>
+            Case Information
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Case Number:</span>
+              <span class="info-value case-number">{{ case.caseNumber }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Subject:</span>
+              <span class="info-value">{{ case.subject }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status:</span>
+              <span [class]="'status-badge ' + getStatusBadgeClass(case.status)">
+                {{ getStatusLabel(case.status) }}
+              </span>
+            </div>
+            <div class="info-item" *ngIf="case.priority">
+              <span class="info-label">Priority:</span>
+              <span class="priority-badge" [class]="'priority-' + (case.priority.toLowerCase())">
+                {{ case.priority }}
+              </span>
+            </div>
+            <div class="info-item" *ngIf="case.description">
+              <span class="info-label">Description:</span>
+              <span class="info-value">{{ case.description }}</span>
+            </div>
+            <div class="info-item" *ngIf="case.createdAt">
+              <span class="info-label">Created:</span>
+              <span class="info-value">{{ case.createdAt | date:'medium' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Return for Correction Notice -->
+      <mat-card *ngIf="canResubmit() && returnComment" class="warning-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon color="warn">warning</mat-icon>
+            Returned for Correction
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="return-comment">{{ returnComment }}</p>
+          <button mat-raised-button color="accent" (click)="navigateToResubmit()" class="resubmit-btn">
+            <mat-icon>edit</mat-icon>
+            Edit & Resubmit
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Case Data -->
+      <mat-card *ngIf="parseCaseData(case.caseData)" class="data-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>data_object</mat-icon>
+            Case Data
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <pre class="case-data-json">{{ parseCaseData(case.caseData) | json }}</pre>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Case History -->
+    <div class="history-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>history</mat-icon>
+            Case History
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="isLoadingHistory" class="loading-container">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Loading history...</p>
+          </div>
+
+          <div *ngIf="!isLoadingHistory && history.length === 0" class="no-history">
+            <mat-icon>inbox</mat-icon>
+            <p>No history available</p>
+          </div>
+
+          <div *ngIf="!isLoadingHistory && history.length > 0" class="history-timeline">
+            <div *ngFor="let item of history; let i = index" class="history-item">
+              <div class="history-icon">
+                <mat-icon>{{ i === 0 ? 'play_arrow' : 'arrow_downward' }}</mat-icon>
+              </div>
+              <div class="history-content">
+                <div class="history-header">
+                  <span class="history-state">{{ item.toState?.stateName || 'Unknown State' }}</span>
+                  <span class="history-date">{{ item.performedAt | date:'short' }}</span>
+                </div>
+                <div class="history-details">
+                  <span *ngIf="item.performedByRole" class="history-role">
+                    <mat-icon>person</mat-icon>
+                    {{ item.performedByRole }}
+                  </span>
+                  <span *ngIf="item.comments" class="history-comment">
+                    <mat-icon>comment</mat-icon>
+                    {{ item.comments }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

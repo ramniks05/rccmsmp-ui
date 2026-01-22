@@ -4,6 +4,7 @@
     <mat-radio-group [(ngModel)]="selectedTab" (change)="onTabChange(selectedTab)" class="radio-group">
       <mat-radio-button [value]="0" class="radio-button">Citizen</mat-radio-button>
       <mat-radio-button [value]="1" class="radio-button">Officer</mat-radio-button>
+      <mat-radio-button [value]="2" class="radio-button">Lawyer</mat-radio-button>
     </mat-radio-group>
   </div>
 
@@ -26,7 +27,7 @@
       (click)="onLoginMethodChange('password')"
       class="method-btn">
       <mat-icon>lock</mat-icon>
-      <ng-container *ngIf="selectedTab === 0; else officerLabel">
+      <ng-container *ngIf="selectedTab === 0 || selectedTab === 2; else officerLabel">
         Mobile/Email & Password
       </ng-container>
       <ng-template #officerLabel>
