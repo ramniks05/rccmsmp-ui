@@ -15,6 +15,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ServicesLayoutComponent } from './services-layout/services-layout.component';
 import { DynamicCaseFormComponent } from './dynamic-case-form/dynamic-case-form.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
+import { DynamicStepperFormComponent } from './dynamic-stepper-form/dynamic-stepper-form.component';
 
 /**
  * Routes for Citizen Module
@@ -47,10 +48,15 @@ const routes: Routes = [
         data: { breadcrumb: 'Home' },
       },
       {
-        path: 'case-form/:caseTypeId/:icon',
+        path: 'case-form/:caseTypeId/:icon/:title',
         component: DynamicCaseFormComponent,
         data: { breadcrumb: 'Case Form' },
       },
+      {
+        path: 'stepper-case-form/:caseTypeId/:icon/:title',
+        component: DynamicStepperFormComponent,
+        data: { breadcrumb: 'Case Form' }
+      }
     ],
   },
 ];
@@ -66,6 +72,7 @@ const routes: Routes = [
     ServicesLayoutComponent,
     DynamicCaseFormComponent,
     MyProfileComponent,
+    DynamicStepperFormComponent,
   ],
   imports: [
     CommonModule,
