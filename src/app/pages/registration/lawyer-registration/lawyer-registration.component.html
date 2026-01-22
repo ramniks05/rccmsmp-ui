@@ -1,22 +1,11 @@
 <div class="registration-page-container">
   <div class="registration-header">
-    <h1>Citizen Registration</h1>
-    <p class="header-subtitle">Fill in your details to create a new citizen account</p>
+    <h1>Lawyer Registration</h1>
+    <p class="header-subtitle">Fill in your details to create a new lawyer account</p>
     <button mat-button routerLink="/home" class="back-button" aria-label="Back to home">
       <mat-icon>arrow_back</mat-icon>
       <span>Back to Login</span>
     </button>
-  </div>
-
-  <!-- Lawyer Registration Link -->
-  <div class="user-type-selection">
-    <p class="switch-registration-text">
-      Are you a lawyer? 
-      <a routerLink="/registration/lawyer" class="lawyer-link">
-        <mat-icon>gavel</mat-icon>
-        Register as Lawyer
-      </a>
-    </p>
   </div>
   
   <div class="registration-container">
@@ -36,7 +25,7 @@
     <div *ngIf="!showOtpVerification">
       <app-dynamic-registration-form
         #dynamicForm
-        [registrationType]="'CITIZEN'"
+        [registrationType]="'LAWYER'"
         [onSubmitForm]="handleFormSubmit.bind(this)"
         [isLoading]="isLoading">
       </app-dynamic-registration-form>
@@ -48,7 +37,7 @@
         </button>
         <button mat-raised-button color="primary" type="button" (click)="onSubmit()" [disabled]="isLoading" class="submit-btn">
           <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
-          <span *ngIf="!isLoading">Register</span>
+          <span *ngIf="!isLoading">Register as Lawyer</span>
           <span *ngIf="isLoading">Registering...</span>
         </button>
       </div>
@@ -68,7 +57,7 @@
       <mat-card-content>
         <p class="otp-instruction">
           An OTP has been sent to your mobile number <strong>{{ registrationMobileNumber }}</strong>. 
-          Please enter the 6-digit OTP to activate your account.
+          Please enter the 6-digit OTP to activate your lawyer account.
         </p>
 
         <!-- Development: Show OTP Code -->
@@ -130,4 +119,3 @@
   </div>
   </div>
 </div>
-

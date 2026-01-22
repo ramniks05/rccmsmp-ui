@@ -1,0 +1,153 @@
+<h2 mat-dialog-title>
+  <mat-icon>{{ data.mode === 'create' ? 'add' : 'edit' }}</mat-icon>
+  {{ data.mode === 'create' ? 'Create' : 'Edit' }} Registration Form Field
+  <span class="registration-type-badge">{{ data.registrationType }}</span>
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="fieldForm" class="field-form">
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3 class="section-title">Basic Information</h3>
+      
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Field Name *</mat-label>
+          <input matInput formControlName="fieldName" placeholder="e.g., firstName" [readonly]="data.mode === 'edit'">
+          <mat-icon matPrefix>code</mat-icon>
+          <mat-hint>Use camelCase (e.g., firstName, mobileNumber). Cannot be changed after creation.</mat-hint>
+          <mat-error *ngIf="fieldForm.get('fieldName')?.hasError('required')">Field name is required</mat-error>
+          <mat-error *ngIf="fieldForm.get('fieldName')?.hasError('pattern')">Only letters, numbers, and underscores allowed. Must start with a letter.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Field Label *</mat-label>
+          <input matInput formControlName="fieldLabel" placeholder="e.g., First Name">
+          <mat-icon matPrefix>label</mat-icon>
+          <mat-error *ngIf="fieldForm.get('fieldLabel')?.hasError('required')">Field label is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Field Type *</mat-label>
+          <mat-select formControlName="fieldType">
+            <mat-option *ngFor="let type of fieldTypes" [value]="type">
+              {{ type }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>category</mat-icon>
+          <mat-error *ngIf="fieldForm.get('fieldType')?.hasError('required')">Field type is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Display Order *</mat-label>
+          <input matInput type="number" formControlName="displayOrder" min="1">
+          <mat-icon matPrefix>sort</mat-icon>
+          <mat-error *ngIf="fieldForm.get('displayOrder')?.hasError('required')">Display order is required</mat-error>
+          <mat-error *ngIf="fieldForm.get('displayOrder')?.hasError('min')">Display order must be at least 1</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Field Group</mat-label>
+          <mat-select formControlName="fieldGroup" [disabled]="loadingGroups">
+            <mat-option [value]="null">-- No Group --</mat-option>
+            <mat-option *ngFor="let group of fieldGroups" [value]="group.groupCode">
+              {{ group.groupLabel }} ({{ group.groupCode }})
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>folder</mat-icon>
+          <mat-hint>Group fields together (optional)</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Placeholder</mat-label>
+          <input matInput formControlName="placeholder" placeholder="e.g., Enter your first name">
+          <mat-icon matPrefix>text_fields</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Help Text</mat-label>
+        <textarea matInput formControlName="helpText" rows="2" placeholder="Additional information for users"></textarea>
+        <mat-icon matPrefix>help_outline</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Default Value</mat-label>
+        <input matInput formControlName="defaultValue" placeholder="Default value for this field">
+        <mat-icon matPrefix>assignment</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Field Options (for DROPDOWN) -->
+    <div class="form-section" *ngIf="showFieldOptions">
+      <h3 class="section-title">Field Options (for Dropdown)</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Field Options (JSON)</mat-label>
+        <textarea matInput formControlName="fieldOptions" rows="4" placeholder='[{"value":"option1","label":"Option 1"},{"value":"option2","label":"Option 2"}]'></textarea>
+        <mat-icon matPrefix>list</mat-icon>
+        <mat-hint>JSON array of &#123;value, label&#125; objects. Leave empty if using data source.</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Data Source Configuration (for DROPDOWN with ADMIN_UNITS) -->
+    <div class="form-section" *ngIf="showDataSourceConfig">
+      <h3 class="section-title">Data Source Configuration</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Data Source (JSON)</mat-label>
+        <textarea matInput formControlName="dataSource" rows="3" placeholder='{"type":"ADMIN_UNITS","level":"CIRCLE"}'></textarea>
+        <mat-icon matPrefix>data_object</mat-icon>
+        <mat-hint>For unit dropdowns: &#123;"type":"ADMIN_UNITS","level":"STATE|DISTRICT|SUB_DIVISION|CIRCLE"&#125;</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Validation Rules -->
+    <div class="form-section" *ngIf="showValidationRules">
+      <h3 class="section-title">Validation Rules (JSON)</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Validation Rules</mat-label>
+        <textarea matInput formControlName="validationRules" rows="4" placeholder='{"minLength":2,"maxLength":50,"pattern":"^[a-zA-Z]+$"}'></textarea>
+        <mat-icon matPrefix>verified</mat-icon>
+        <mat-hint>JSON object with minLength, maxLength, pattern, etc.</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Conditional Logic -->
+    <div class="form-section">
+      <h3 class="section-title">Conditional Logic (JSON)</h3>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Conditional Logic</mat-label>
+        <textarea matInput formControlName="conditionalLogic" rows="3" placeholder='{"condition":"fieldName === value","showWhen":true}'></textarea>
+        <mat-icon matPrefix>settings_ethernet</mat-icon>
+        <mat-hint>JSON object for conditional field display (optional)</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Settings -->
+    <div class="form-section">
+      <h3 class="section-title">Settings</h3>
+      <div class="checkbox-group">
+        <mat-checkbox formControlName="isRequired">
+          Required Field
+        </mat-checkbox>
+        <mat-checkbox formControlName="isActive">
+          Active (visible in form)
+        </mat-checkbox>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">
+    Cancel
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="fieldForm.invalid || isLoading">
+    <mat-spinner diameter="20" *ngIf="isLoading" class="inline-spinner"></mat-spinner>
+    <span *ngIf="!isLoading">{{ data.mode === 'create' ? 'Create' : 'Update' }}</span>
+    <span *ngIf="isLoading">Saving...</span>
+  </button>
+</mat-dialog-actions>

@@ -16,7 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
 // import { ViewDialogComponent } from './components/view-dialog/view-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -45,6 +45,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
   ],
   imports: [
     ReactiveFormsModule,
+    FormsModule,
     CommonModule,
     RouterModule,
     MatToolbarModule,
@@ -68,6 +69,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
   ],
   exports: [
     ReactiveFormsModule,
+    FormsModule,
     HeaderComponent,
     FooterComponent,
     MatExpansionModule,

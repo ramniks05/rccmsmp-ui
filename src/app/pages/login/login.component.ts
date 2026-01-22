@@ -24,7 +24,7 @@ import { AdminService } from '../../admin/admin.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  selectedTab = 0; // 0 = Citizen, 1 = Operator
+  selectedTab = 0; // 0 = Citizen, 1 = Officer, 2 = Lawyer
   loginMethod = 'mobile'; // 'mobile' or 'password'
 
   mobileLoginForm: FormGroup;
@@ -79,19 +79,19 @@ export class LoginComponent {
   }
 
   /**
-   * Switch between Citizen and Operator tabs
+   * Switch between Citizen, Officer, and Lawyer tabs
    */
   onTabChange(index: number): void {
     this.selectedTab = index;
-    // Citizens can use both login methods; Operators use only password (UserID & Password)
-    this.loginMethod = this.selectedTab === 0 ? 'mobile' : 'password';
+    // Citizens and Lawyers can use both login methods; Officers use only password (UserID & Password)
+    this.loginMethod = (this.selectedTab === 0 || this.selectedTab === 2) ? 'mobile' : 'password';
     this.otpSent = false;
     this.otpErrorMessage = '';
     this.otpSuccessMessage = '';
     this.otpCode = null;
     this.resetForms();
 
-    // Update password CAPTCHA validator when switching between Citizen and Operator
+    // Update password CAPTCHA validator when switching between user types
     this.updatePasswordCaptchaValidator();
   }
 
@@ -295,14 +295,23 @@ export class LoginComponent {
   onSendOtp(): void {
     if (this.mobileLoginForm.get('mobile')?.valid) {
       const mobileNumber = this.mobileLoginForm.get('mobile')?.value;
-      const citizenType = this.selectedTab === 0 ? 'CITIZEN' : 'OPERATOR';
 
       this.isSendingOtp = true;
       this.otpErrorMessage = '';
       this.otpSuccessMessage = '';
 
-      this.apiService
-        .sendOTP(mobileNumber, citizenType)
+      // Use appropriate API based on user type
+      let otpObservable;
+      if (this.selectedTab === 2) {
+        // Lawyer
+        otpObservable = this.apiService.sendLawyerOTP(mobileNumber);
+      } else {
+        // Citizen or Officer
+        const citizenType = this.selectedTab === 0 ? 'CITIZEN' : 'OPERATOR';
+        otpObservable = this.apiService.sendOTP(mobileNumber, citizenType);
+      }
+
+      otpObservable
         .pipe(
           catchError((error) => {
             this.isSendingOtp = false;
@@ -443,7 +452,8 @@ export class LoginComponent {
       const mobileNumber = this.mobileLoginForm.get('mobile')?.value;
       const otp = this.mobileLoginForm.get('otp')?.value;
       const captcha = this.mobileLoginForm.get('captcha')?.value?.toUpperCase();
-      const citizenType = this.selectedTab === 0 ? 'CITIZEN' : 'OPERATOR';
+      // Determine user type: 0 = Citizen, 1 = Officer, 2 = Lawyer
+      const userType = this.selectedTab === 0 ? 'CITIZEN' : (this.selectedTab === 2 ? 'LAWYER' : 'OPERATOR');
 
       this.isLoggingIn = true;
       this.loginErrorMessage = '';
@@ -455,7 +465,7 @@ export class LoginComponent {
         otp || '',
         captcha,
         this.captchaId,
-        citizenType,
+        userType,
         true,
       );
     } else {
@@ -565,13 +575,19 @@ export class LoginComponent {
     credential: string, // otp for mobile login, password for password login
     captcha: string,
     captchaId: string,
-    citizenType: string,
+    userType: string,
     isMobileLogin: boolean,
   ): void {
     if (isMobileLogin) {
       // Mobile login with OTP
-      this.apiService
-        .verifyOTP(identifier, credential, captcha, captchaId, citizenType)
+      let loginObservable;
+      if (userType === 'LAWYER') {
+        loginObservable = this.apiService.lawyerOTPLogin(identifier, credential, captcha, captchaId);
+      } else {
+        loginObservable = this.apiService.verifyOTP(identifier, credential, captcha, captchaId, userType);
+      }
+      
+      loginObservable
         .pipe(
           catchError((error) => {
             this.isLoggingIn = false;
@@ -591,8 +607,14 @@ export class LoginComponent {
         });
     } else {
       // Password login
-      this.apiService
-        .passwordLogin(identifier, credential, captcha, captchaId, citizenType)
+      let loginObservable;
+      if (userType === 'LAWYER') {
+        loginObservable = this.apiService.lawyerPasswordLogin(identifier, credential, captcha, captchaId);
+      } else {
+        loginObservable = this.apiService.passwordLogin(identifier, credential, captcha, captchaId, userType);
+      }
+      
+      loginObservable
         .pipe(
           catchError((error) => {
             this.isPasswordLoggingIn = false;
@@ -653,9 +675,11 @@ export class LoginComponent {
       setTimeout(() => {
         if (citizenType === 'CITIZEN' || this.selectedTab === 0) {
           this.router.navigate(['/citizen/home']);
+        } else if (citizenType === 'LAWYER' || this.selectedTab === 2) {
+          this.router.navigate(['/lawyer/home']);
         } else {
-          // For operators, redirect to operator dashboard (to be implemented)
-          this.router.navigate(['/home']);
+          // For operators, redirect to operator dashboard
+          this.router.navigate(['/officer/home']);
         }
       }, 1500);
     } else {
@@ -714,8 +738,8 @@ export class LoginComponent {
       const username = this.passwordLoginForm.get('username')?.value;
       const password = this.passwordLoginForm.get('password')?.value;
 
-      // Citizen password login (Mobile/Email & Password with CAPTCHA)
-      if (this.selectedTab === 0) {
+      // Citizen or Lawyer password login (Mobile/Email & Password with CAPTCHA)
+      if (this.selectedTab === 0 || this.selectedTab === 2) {
         // Basic CAPTCHA validation
         const captchaValue = this.passwordLoginForm
           .get('captcha')
@@ -745,19 +769,19 @@ export class LoginComponent {
         const captcha = this.passwordLoginForm
           .get('captcha')
           ?.value?.toUpperCase();
-        const citizenType = 'CITIZEN';
+        const userType = this.selectedTab === 0 ? 'CITIZEN' : 'LAWYER';
 
         this.isPasswordLoggingIn = true;
         this.passwordLoginErrorMessage = '';
         this.passwordLoginSuccessMessage = '';
 
-        // Validate CAPTCHA first (optional pre-validation) then proceed with citizen login
+        // Validate CAPTCHA first (optional pre-validation) then proceed with login
         this.validateCaptchaAndLogin(
           username,
           password,
           captcha,
           this.passwordCaptchaId,
-          citizenType,
+          userType,
           false,
         );
       } else {
@@ -834,9 +858,11 @@ export class LoginComponent {
       setTimeout(() => {
         if (citizenType === 'CITIZEN' || this.selectedTab === 0) {
           this.router.navigate(['/citizen/home']);
+        } else if (citizenType === 'LAWYER' || this.selectedTab === 2) {
+          this.router.navigate(['/lawyer/home']);
         } else {
-          // For operators, redirect to operator dashboard (to be implemented)
-          this.router.navigate(['/home']);
+          // For operators, redirect to operator dashboard
+          this.router.navigate(['/officer/home']);
         }
       }, 1500);
     } else {

@@ -35,6 +35,12 @@ const routes: Routes = [
     data: { breadcrumb: 'Officer' }
   },
   {
+    path: 'lawyer',
+    loadChildren: () => import('./lawyer/lawyer.module').then(m => m.LawyerModule),
+    data: { breadcrumb: 'Lawyer' },
+    canActivate: [AuthGuard]
+  },
+  {
     path: '**',
     redirectTo: '/home'
   }
