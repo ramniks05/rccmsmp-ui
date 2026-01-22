@@ -10,16 +10,16 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 /**
- * Case Types Component
- * Manages case types with CRUD operations
+ * Acts Component
+ * Manages acts with CRUD operations
  */
 @Component({
-  selector: 'app-case-types',
-  templateUrl: './case-types.component.html',
-  styleUrls: ['./case-types.component.scss']
+  selector: 'app-acts',
+  templateUrl: './acts.component.html',
+  styleUrls: ['./acts.component.scss']
 })
-export class CaseTypesComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'code', 'name', 'actName', 'isActive', 'actions'];
+export class ActsComponent implements OnInit, AfterViewInit {
+  displayedColumns: string[] = ['id', 'actCode', 'actName', 'actYear', 'isActive', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -27,7 +27,6 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
 
   isLoading = false;
   errorMessage = '';
-  acts: any[] = [];
 
   constructor(
     private adminService: AdminService,
@@ -37,27 +36,6 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadActs();
-    this.loadCaseTypes();
-  }
-
-  /**
-   * Load acts for dropdown
-   */
-  loadActs(): void {
-    this.adminService.getAllActs()
-      .pipe(
-        catchError(error => {
-          return throwError(() => error);
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
-          if (apiResponse.success) {
-            this.acts = apiResponse.data || [];
-          }
-        }
-      });
   }
 
   ngAfterViewInit(): void {
@@ -66,13 +44,13 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Load all case types
+   * Load all acts
    */
-  loadCaseTypes(): void {
+  loadActs(): void {
     this.isLoading = true;
     this.errorMessage = '';
     
-    this.adminService.getAllCaseTypes()
+    this.adminService.getAllActs()
       .pipe(
         catchError(error => {
           this.isLoading = false;
@@ -98,14 +76,14 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
    * Open create dialog
    */
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(CaseTypeDialogComponent, {
+    const dialogRef = this.dialog.open(ActDialogComponent, {
       width: '700px',
-      data: { mode: 'create', acts: this.acts }
+      data: { mode: 'create' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCaseTypes();
+        this.loadActs();
       }
     });
   }
@@ -113,30 +91,30 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
   /**
    * Open edit dialog
    */
-  openEditDialog(caseType: any): void {
-    const dialogRef = this.dialog.open(CaseTypeDialogComponent, {
+  openEditDialog(act: any): void {
+    const dialogRef = this.dialog.open(ActDialogComponent, {
       width: '700px',
-      data: { mode: 'edit', caseType: caseType, acts: this.acts }
+      data: { mode: 'edit', act: act }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadCaseTypes();
+        this.loadActs();
       }
     });
   }
 
   /**
-   * Delete case type
+   * Delete act
    */
-  deleteCaseType(caseType: any): void {
-    if (confirm(`Are you sure you want to delete "${caseType.name}"?`)) {
+  deleteAct(act: any): void {
+    if (confirm(`Are you sure you want to delete "${act.actName}"?`)) {
       this.isLoading = true;
-      this.adminService.deleteCaseType(caseType.id)
+      this.adminService.deleteAct(act.id)
         .pipe(
           catchError(error => {
             this.isLoading = false;
-            this.showError(error.error?.message || 'Failed to delete case type');
+            this.showError(error.error?.message || 'Failed to delete act');
             return throwError(() => error);
           })
         )
@@ -145,8 +123,8 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
             this.isLoading = false;
             const apiResponse = response?.success !== undefined ? response : { success: true };
             if (apiResponse.success) {
-              this.showSuccess('Case type deleted successfully');
-              this.loadCaseTypes();
+              this.showSuccess('Act deleted successfully');
+              this.loadActs();
             }
           },
           error: () => {
@@ -177,7 +155,7 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
     } else if (error.status === 401) {
       this.errorMessage = 'Unauthorized. Please login again.';
     } else {
-      this.errorMessage = 'Failed to load case types. Please try again.';
+      this.errorMessage = 'Failed to load acts. Please try again.';
     }
   }
 
@@ -206,41 +184,36 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
 }
 
 /**
- * Dialog Component for Create/Edit Case Type
+ * Dialog Component for Create/Edit Act
  */
 @Component({
-  selector: 'app-case-type-dialog',
+  selector: 'app-act-dialog',
   template: `
-    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create' : 'Edit' }} Case Type</h2>
+    <h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create' : 'Edit' }} Act</h2>
     <mat-dialog-content>
-      <form [formGroup]="caseTypeForm" class="case-type-form">
+      <form [formGroup]="actForm" class="act-form">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Code *</mat-label>
-          <input matInput formControlName="code" placeholder="Enter case type code">
-          <mat-error *ngIf="caseTypeForm.get('code')?.hasError('required')">Code is required</mat-error>
+          <mat-label>Act Code *</mat-label>
+          <input matInput formControlName="actCode" placeholder="e.g., MLR_LR_ACT_1960">
+          <mat-error *ngIf="actForm.get('actCode')?.hasError('required')">Act Code is required</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Name *</mat-label>
-          <input matInput formControlName="name" placeholder="Enter case type name">
-          <mat-error *ngIf="caseTypeForm.get('name')?.hasError('required')">Name is required</mat-error>
+          <mat-label>Act Name *</mat-label>
+          <input matInput formControlName="actName" placeholder="Enter act name">
+          <mat-error *ngIf="actForm.get('actName')?.hasError('required')">Act Name is required</mat-error>
         </mat-form-field>
 
         <div class="form-row">
           <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Act (Optional)</mat-label>
-            <mat-select formControlName="actId">
-              <mat-option [value]="null">None</mat-option>
-              <mat-option *ngFor="let act of data.acts" [value]="act.id">
-                {{ act.actName }} ({{ act.actYear }})
-              </mat-option>
-            </mat-select>
+            <mat-label>Act Year *</mat-label>
+            <input matInput type="number" formControlName="actYear" placeholder="e.g., 1960" min="1900" max="2100">
+            <mat-error *ngIf="actForm.get('actYear')?.hasError('required')">Act Year is required</mat-error>
+            <mat-error *ngIf="actForm.get('actYear')?.hasError('min') || actForm.get('actYear')?.hasError('max')">
+              Year must be between 1900 and 2100
+            </mat-error>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Workflow Code</mat-label>
-            <input matInput formControlName="workflowCode" placeholder="e.g., MUTATION_WORKFLOW">
-          </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline" class="full-width">
@@ -248,20 +221,25 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
           <textarea matInput formControlName="description" rows="3" placeholder="Enter description"></textarea>
         </mat-form-field>
 
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Sections (JSON)</mat-label>
+          <textarea matInput formControlName="sections" rows="4" placeholder='{"93":"Appeals","95":"Revision"}'></textarea>
+          <mat-hint>Enter sections as JSON object (optional)</mat-hint>
+        </mat-form-field>
 
         <mat-checkbox formControlName="isActive">Active</mat-checkbox>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="caseTypeForm.invalid || isLoading">
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="actForm.invalid || isLoading">
         <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
         <span *ngIf="!isLoading">{{ data.mode === 'create' ? 'Create' : 'Update' }}</span>
       </button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .case-type-form {
+    .act-form {
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -284,34 +262,34 @@ export class CaseTypesComponent implements OnInit, AfterViewInit {
     }
   `]
 })
-export class CaseTypeDialogComponent {
-  caseTypeForm: FormGroup;
+export class ActDialogComponent {
+  actForm: FormGroup;
   isLoading = false;
 
   constructor(
     private fb: FormBuilder,
     private adminService: AdminService,
-    public dialogRef: MatDialogRef<CaseTypeDialogComponent>,
+    public dialogRef: MatDialogRef<ActDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private snackBar: MatSnackBar
   ) {
-    this.caseTypeForm = this.fb.group({
-      code: ['', Validators.required],
-      name: ['', Validators.required],
-      actId: [null],
-      workflowCode: [''],
+    this.actForm = this.fb.group({
+      actCode: ['', [Validators.required]],
+      actName: ['', [Validators.required]],
+      actYear: ['', [Validators.required, Validators.min(1900), Validators.max(2100)]],
       description: [''],
+      sections: [''],
       isActive: [true]
     });
 
-    if (data.mode === 'edit' && data.caseType) {
-      this.caseTypeForm.patchValue({
-        code: data.caseType.code,
-        name: data.caseType.name,
-        actId: data.caseType.actId || null,
-        workflowCode: data.caseType.workflowCode || '',
-        description: data.caseType.description || '',
-        isActive: data.caseType.isActive !== false
+    if (data.mode === 'edit' && data.act) {
+      this.actForm.patchValue({
+        actCode: data.act.actCode,
+        actName: data.act.actName,
+        actYear: data.act.actYear,
+        description: data.act.description || '',
+        sections: typeof data.act.sections === 'string' ? data.act.sections : JSON.stringify(data.act.sections || {}, null, 2),
+        isActive: data.act.isActive !== false
       });
     }
   }
@@ -321,51 +299,54 @@ export class CaseTypeDialogComponent {
   }
 
   onSave(): void {
-    if (this.caseTypeForm.valid) {
+    if (this.actForm.valid) {
       this.isLoading = true;
-      const formValue = this.caseTypeForm.value;
-      const caseTypeData = {
+      const formValue = this.actForm.value;
+      
+      // Validate and parse sections JSON if provided
+      let sections = formValue.sections;
+      if (sections && sections.trim()) {
+        try {
+          sections = JSON.parse(sections);
+        } catch (e) {
+          this.snackBar.open('Invalid JSON format for sections', 'Close', { duration: 3000 });
+          this.isLoading = false;
+          return;
+        }
+      } else {
+        sections = null;
+      }
+
+      const actData = {
         ...formValue,
-        actId: formValue.actId || null
+        sections: sections
       };
 
-      if (this.data.mode === 'create') {
-        this.adminService.createCaseType(caseTypeData)
-          .pipe(catchError(error => {
+      const request = this.data.mode === 'create'
+        ? this.adminService.createAct(actData)
+        : this.adminService.updateAct(this.data.act.id, actData);
+
+      request
+        .pipe(
+          catchError(error => {
             this.isLoading = false;
-            this.snackBar.open(error.error?.message || 'Failed to create case type', 'Close', { duration: 3000 });
+            this.snackBar.open(error.error?.message || 'Operation failed', 'Close', { duration: 3000 });
             return throwError(() => error);
-          }))
-          .subscribe({
-            next: (response) => {
-              this.isLoading = false;
-              const apiResponse = response?.success !== undefined ? response : { success: true };
-              if (apiResponse.success) {
-                this.snackBar.open('Case type created successfully', 'Close', { duration: 3000 });
-                this.dialogRef.close(true);
-              }
-            },
-            error: () => this.isLoading = false
-          });
-      } else {
-        this.adminService.updateCaseType(this.data.caseType.id, caseTypeData)
-          .pipe(catchError(error => {
+          })
+        )
+        .subscribe({
+          next: (response) => {
             this.isLoading = false;
-            this.snackBar.open(error.error?.message || 'Failed to update case type', 'Close', { duration: 3000 });
-            return throwError(() => error);
-          }))
-          .subscribe({
-            next: (response) => {
-              this.isLoading = false;
-              const apiResponse = response?.success !== undefined ? response : { success: true };
-              if (apiResponse.success) {
-                this.snackBar.open('Case type updated successfully', 'Close', { duration: 3000 });
-                this.dialogRef.close(true);
-              }
-            },
-            error: () => this.isLoading = false
-          });
-      }
+            const apiResponse = response?.success !== undefined ? response : { success: true };
+            if (apiResponse.success) {
+              this.snackBar.open(`Act ${this.data.mode === 'create' ? 'created' : 'updated'} successfully`, 'Close', { duration: 3000 });
+              this.dialogRef.close(true);
+            }
+          },
+          error: () => {
+            this.isLoading = false;
+          }
+        });
     }
   }
 }

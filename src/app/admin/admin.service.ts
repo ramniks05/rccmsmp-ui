@@ -108,8 +108,9 @@ export class AdminService {
 
   /**
    * Assign Officer to Post
+   * Now uses courtId instead of unitId
    */
-  assignOfficerToPost(posting: { unitId: number; roleCode: string; officerId: number }): Observable<any> {
+  assignOfficerToPost(posting: { courtId: number; roleCode: string; officerId: number }): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/postings`, posting, {
       headers: this.getAuthHeaders()
     });
@@ -117,8 +118,9 @@ export class AdminService {
 
   /**
    * Transfer Officer
+   * Now uses courtId instead of unitId
    */
-  transferOfficer(posting: { unitId: number; roleCode: string; officerId: number }): Observable<any> {
+  transferOfficer(posting: { courtId: number; roleCode: string; officerId: number }): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/postings/transfer`, posting, {
       headers: this.getAuthHeaders()
     });
@@ -143,10 +145,20 @@ export class AdminService {
   }
 
   /**
-   * Get Postings by Unit
+   * Get Postings by Court
    */
-  getPostingsByUnit(unitId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/postings/unit/${unitId}`, {
+  getPostingsByCourt(courtId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/postings/court/${courtId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Active Postings by Unit
+   * Returns active postings for a unit (through courts)
+   */
+  getActivePostingsByUnit(unitId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/postings/unit/${unitId}/active`, {
       headers: this.getAuthHeaders()
     });
   }
@@ -442,6 +454,166 @@ export class AdminService {
     return this.http.put(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/fields/reorder`, {
       fieldOrders
     }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ==================== Acts Management ====================
+
+  /**
+   * Get All Active Acts
+   */
+  getAllActs(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/acts`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Act by ID
+   */
+  getActById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/acts/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
+  /**
+   * Create Act
+   */
+  createAct(act: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/acts`, act, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update Act
+   */
+  updateAct(id: number, act: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/acts/${id}`, act, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Delete Act
+   */
+  deleteAct(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/acts/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ==================== Case Natures Management ====================
+
+  /**
+   * Get All Case Natures
+   */
+  getAllCaseNatures(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/case-natures`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Case Natures by Case Type
+   */
+  getCaseNaturesByCaseType(caseTypeId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/case-natures/case-type/${caseTypeId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Case Nature by ID
+   */
+  getCaseNatureById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/case-natures/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Create Case Nature
+   */
+  createCaseNature(caseNature: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/case-natures`, caseNature, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update Case Nature
+   */
+  updateCaseNature(id: number, caseNature: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/case-natures/${id}`, caseNature, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Delete Case Nature
+   */
+  deleteCaseNature(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/case-natures/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // ==================== Courts Management ====================
+
+  /**
+   * Get All Courts
+   */
+  getAllCourts(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/courts`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Courts by Level
+   */
+  getCourtsByLevel(level: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/courts/level/${level}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Get Court by ID
+   */
+  getCourtById(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/courts/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Create Court
+   */
+  createCourt(court: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/courts`, court, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Update Court
+   */
+  updateCourt(id: number, court: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/courts/${id}`, court, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Delete Court
+   */
+  deleteCourt(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/courts/${id}`, {
       headers: this.getAuthHeaders()
     });
   }

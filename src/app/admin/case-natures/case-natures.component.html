@@ -2,15 +2,15 @@
   <div class="page-header">
     <div class="header-content">
       <h1 class="page-title">
-        <mat-icon>folder_special</mat-icon>
-        Case Types Management
+        <mat-icon>category</mat-icon>
+        Case Natures Management
       </h1>
-      <p class="page-subtitle">Manage case types for the system</p>
+      <p class="page-subtitle">Manage case natures for the system</p>
     </div>
     <div class="header-actions">
       <button mat-raised-button color="primary" (click)="openCreateDialog()" class="create-btn">
         <mat-icon>add</mat-icon>
-        Create New Case Type
+        Create New Case Nature
       </button>
       <button mat-raised-button color="primary" routerLink="/admin/home" class="back-btn">
         <mat-icon>arrow_back</mat-icon>
@@ -29,7 +29,7 @@
     <!-- Loading Spinner -->
     <div *ngIf="isLoading" class="loading-container">
       <mat-spinner diameter="50"></mat-spinner>
-      <p>Loading case types...</p>
+      <p>Loading case natures...</p>
     </div>
 
     <!-- Table Container -->
@@ -38,7 +38,7 @@
       <div class="table-header">
         <mat-form-field appearance="outline" class="search-field">
           <mat-label>Search</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Search case types...">
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search case natures...">
           <mat-icon matPrefix>search</mat-icon>
         </mat-form-field>
       </div>
@@ -52,59 +52,83 @@
               <mat-icon class="header-icon">tag</mat-icon>
               ID
             </th>
-            <td mat-cell *matCellDef="let caseType">
+            <td mat-cell *matCellDef="let caseNature">
               <div class="cell-content">
                 <mat-icon class="cell-icon">fingerprint</mat-icon>
-                <span>{{ caseType.id }}</span>
+                <span>{{ caseNature.id }}</span>
               </div>
             </td>
           </ng-container>
 
-          <!-- Code Column -->
-          <ng-container matColumnDef="code">
+          <!-- Nature Code Column -->
+          <ng-container matColumnDef="natureCode">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>
               <mat-icon class="header-icon">code</mat-icon>
-              Code
+              Nature Code
             </th>
-            <td mat-cell *matCellDef="let caseType">
+            <td mat-cell *matCellDef="let caseNature">
               <div class="cell-content">
                 <mat-icon class="cell-icon">qr_code</mat-icon>
-                <span class="code-text">{{ caseType.code }}</span>
+                <span class="code-text">{{ caseNature.natureCode }}</span>
               </div>
             </td>
           </ng-container>
 
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
+          <!-- Nature Name Column -->
+          <ng-container matColumnDef="natureName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>
               <mat-icon class="header-icon">description</mat-icon>
-              Name
+              Nature Name
             </th>
-            <td mat-cell *matCellDef="let caseType">
+            <td mat-cell *matCellDef="let caseNature">
               <div class="cell-content">
                 <mat-icon class="cell-icon">folder</mat-icon>
-                <span class="name-text">{{ caseType.name }}</span>
+                <span class="name-text">{{ caseNature.natureName }}</span>
               </div>
             </td>
           </ng-container>
 
-          <!-- Act Name Column -->
-          <ng-container matColumnDef="actName">
+          <!-- Case Type Name Column -->
+          <ng-container matColumnDef="caseTypeName">
             <th mat-header-cell *matHeaderCellDef>
-              <mat-icon class="header-icon">gavel</mat-icon>
-              Act
+              <mat-icon class="header-icon">folder_special</mat-icon>
+              Case Type
             </th>
-            <td mat-cell *matCellDef="let caseType">
-              <div class="cell-content" *ngIf="caseType.actName; else noAct">
-                <mat-icon class="cell-icon">description</mat-icon>
-                <span>{{ caseType.actName }} ({{ caseType.actYear }})</span>
+            <td mat-cell *matCellDef="let caseNature">
+              <div class="cell-content">
+                <mat-icon class="cell-icon">category</mat-icon>
+                <span>{{ caseNature.caseTypeName }}</span>
               </div>
-              <ng-template #noAct>
-                <span class="no-data-text">-</span>
-              </ng-template>
             </td>
           </ng-container>
 
+          <!-- Court Level Column -->
+          <ng-container matColumnDef="courtLevel">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+              <mat-icon class="header-icon">account_balance</mat-icon>
+              Court Level
+            </th>
+            <td mat-cell *matCellDef="let caseNature">
+              <div class="cell-content">
+                <mat-icon class="cell-icon">gavel</mat-icon>
+                <span>{{ caseNature.courtLevel }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Is Appeal Column -->
+          <ng-container matColumnDef="isAppeal">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon class="header-icon">swap_vert</mat-icon>
+              Appeal
+            </th>
+            <td mat-cell *matCellDef="let caseNature">
+              <span [class.active]="caseNature.isAppeal" [class.inactive]="!caseNature.isAppeal" class="status-badge">
+                <mat-icon class="status-icon">{{ caseNature.isAppeal ? 'arrow_upward' : 'file_copy' }}</mat-icon>
+                {{ caseNature.isAppeal ? 'Yes' : 'No' }}
+              </span>
+            </td>
+          </ng-container>
 
           <!-- Active Status Column -->
           <ng-container matColumnDef="isActive">
@@ -112,10 +136,10 @@
               <mat-icon class="header-icon">toggle_on</mat-icon>
               Status
             </th>
-            <td mat-cell *matCellDef="let caseType">
-              <span [class.active]="caseType.isActive" [class.inactive]="!caseType.isActive" class="status-badge">
-                <mat-icon class="status-icon">{{ caseType.isActive ? 'check_circle' : 'cancel' }}</mat-icon>
-                {{ caseType.isActive ? 'Active' : 'Inactive' }}
+            <td mat-cell *matCellDef="let caseNature">
+              <span [class.active]="caseNature.isActive" [class.inactive]="!caseNature.isActive" class="status-badge">
+                <mat-icon class="status-icon">{{ caseNature.isActive ? 'check_circle' : 'cancel' }}</mat-icon>
+                {{ caseNature.isActive ? 'Active' : 'Inactive' }}
               </span>
             </td>
           </ng-container>
@@ -126,15 +150,12 @@
               <mat-icon class="header-icon">settings</mat-icon>
               Actions
             </th>
-            <td mat-cell *matCellDef="let caseType">
+            <td mat-cell *matCellDef="let caseNature">
               <div class="action-buttons-cell">
-                <button mat-icon-button color="accent" [routerLink]="['/admin/form-schema-builder', caseType.id]" matTooltip="Manage Form Schema" class="action-btn-form">
-                  <mat-icon>build</mat-icon>
-                </button>
-                <button mat-icon-button color="primary" (click)="openEditDialog(caseType)" matTooltip="Edit Case Type" class="action-btn-edit">
+                <button mat-icon-button color="primary" (click)="openEditDialog(caseNature)" matTooltip="Edit Case Nature" class="action-btn-edit">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)="deleteCaseType(caseType)" matTooltip="Delete Case Type" class="action-btn-delete">
+                <button mat-icon-button color="warn" (click)="deleteCaseNature(caseNature)" matTooltip="Delete Case Nature" class="action-btn-delete">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -149,7 +170,7 @@
             <td class="mat-cell" [attr.colspan]="displayedColumns.length">
               <div class="no-data">
                 <mat-icon>inbox</mat-icon>
-                <p>No case types found</p>
+                <p>No case natures found</p>
               </div>
             </td>
           </tr>
