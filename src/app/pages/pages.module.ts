@@ -1,3 +1,4 @@
+import { IndexComponent } from './index/index.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -19,6 +20,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 // Page Components
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { SharedModule } from '../shared/shared.module';
 
 /**
  * Routes for Pages Module
@@ -39,7 +41,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    IndexComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +59,8 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    SharedModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }

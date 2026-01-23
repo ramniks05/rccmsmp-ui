@@ -1,0 +1,267 @@
+<!-- ================= TOP UPPER HEADER (NIC / BIS STYLE) ================= -->
+<header class="top-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <!-- LEFT : Government / Department Branding -->
+      <div class="col-lg-5 col-md-5 col-sm-12 branding">
+        <div class="branding-wrap">
+          <img
+            class="gov-logo"
+            [src]="data.stateConfig.logoUrl"
+            alt="State Logo"
+          />
+          <div class="branding-text">
+            <h2>{{ data.stateConfig.departmentName }}</h2>
+            <h3>Government of {{ data.stateConfig.stateName }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER : Secondary Logo (Project / Portal) -->
+      <div class="col-lg-2 col-md-2 col-sm-12 text-center portal-logo">
+        <img src="../../../assets/swatchh-bharat.png" alt="Portal Logo" />
+      </div>
+
+      <!-- RIGHT : Accessibility + Auth -->
+      <div class="col-lg-5 col-md-5 col-sm-12 actions">
+        <!-- ROW 1 : ACCESSIBILITY TOOLS -->
+        <ul class="accessibility">
+          <!-- Skip to main content -->
+          <li>
+            <a href="#main-content" class="skip-link">
+              <mat-icon>skip_next</mat-icon>
+              Skip
+            </a>
+          </li>
+
+          <!-- High Contrast -->
+          <li>
+            <button aria-label="Toggle high contrast">
+              <mat-icon>contrast</mat-icon>
+            </button>
+          </li>
+
+          <!-- Text Spacing -->
+          <li>
+            <button aria-label="Increase text spacing">
+              <mat-icon>format_line_spacing</mat-icon>
+            </button>
+          </li>
+
+          <!-- Screen Reader Info -->
+          <li>
+            <button aria-label="Screen reader support">
+              <mat-icon>record_voice_over</mat-icon>
+            </button>
+          </li>
+
+          <!-- Zoom Dropdown (single modern control) -->
+          <li class="zoom-dropdown">
+            <button
+              mat-button
+              [matMenuTriggerFor]="zoomMenu"
+              aria-label="Zoom options"
+            >
+              <mat-icon>zoom_in</mat-icon>
+              <span class="zoom-text">Zoom</span>
+            </button>
+
+            <mat-menu #zoomMenu="matMenu">
+              <button mat-menu-item>100%</button>
+              <button mat-menu-item>110%</button>
+              <button mat-menu-item>125%</button>
+              <button mat-menu-item>150%</button>
+            </mat-menu>
+          </li>
+        </ul>
+
+        <!-- ROW 2 : AUTH ACTIONS -->
+        <div class="auth-buttons">
+          <button class="login-btn">
+            <mat-icon>lock</mat-icon>
+            Login
+          </button>
+
+          <button class="register-btn">
+            <mat-icon>person_add</mat-icon>
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN NAV BAR ================= -->
+<nav class="main-nav">
+  <div class="container-fluid">
+    <ul class="nav-list">
+      <li class="active">
+        <a href="#"><mat-icon>home</mat-icon> Home</a>
+      </li>
+      <li>
+        <a href="#"><mat-icon>info</mat-icon> About</a>
+      </li>
+      <li>
+        <a href="#"><mat-icon>description</mat-icon> Documents</a>
+      </li>
+      <li>
+        <a href="#"><mat-icon>help</mat-icon> FAQ</a>
+      </li>
+      <li>
+        <a href="#"><mat-icon>call</mat-icon> Contact Us</a>
+      </li>
+    </ul>
+
+    <!-- NOTICE MARQUEE -->
+    <div class="notice-marquee">
+      <mat-icon>campaign</mat-icon>
+      <marquee>{{ marqueeText }}</marquee>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== NEXT SECTION : Sidebar + Content (Below Banner) ===== -->
+<section class="container sidebarMenu__outer next-section">
+  <div class="row">
+    <!-- LEFT : SAME SIDEBAR -->
+    <!-- LEFT : SIDEBAR -->
+    <div class="col-12 col-lg-3 p-0 pl-lg-3 pr-lg-0 sidebar-col">
+      <aside class="sidebar">
+        <ul class="menu">
+          <li *ngFor="let item of menu" class="menu-item">
+            <a href="javascript:void(0)">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+              <mat-icon *ngIf="item.children" class="arrow">
+                chevron_right
+              </mat-icon>
+            </a>
+
+            <!-- HOVER DROPDOWN -->
+            <ul class="submenu" *ngIf="item.children">
+              <li *ngFor="let child of item.children">
+                <a href="javascript:void(0)">
+                  {{ child }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </aside>
+    </div>
+
+    <!-- RIGHT : CONTENT AREA -->
+    <div class="col-12 col-lg-9 content-area">
+      <!-- TOP BANNER (same height as sidebar) -->
+      <section class="top-banner">
+        <div
+          class="banner-slide"
+          *ngFor="let banner of banners; let i = index"
+          [class.active]="i === activeBanner"
+        >
+          <img [src]="banner.imageUrl" alt="Banner" />
+          <div class="banner-overlay">
+            <h2>{{ banner.title }}</h2>
+            <p>{{ banner.subtitle }}</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+
+      <!-- SECTION HEADER -->
+      <div class="section-header">
+        <h2>Latest Updates & Highlights</h2>
+        <p>Important announcements, circulars and department updates</p>
+      </div>
+
+      <!-- CARDS GRID -->
+      <div class="row">
+        <div class="col-md-6 col-lg-8 mb-4">
+          <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4" *ngFor="let item of highlights">
+          <div class="info-card">
+            <div class="card-icon">
+              <mat-icon>{{ item.icon }}</mat-icon>
+            </div>
+
+            <div class="card-body">
+              <h5>{{ item.title }}</h5>
+              <p>{{ item.description }}</p>
+            </div>
+
+            <div class="card-footer">
+              <a href="javascript:void(0)">View Details →</a>
+            </div>
+          </div>
+        </div>
+
+          </div>
+        </div>
+         <!-- Info Cards Column -->
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+          <h5 class="card-title pt-20 asbb p-1 fw-bold whats_new">
+            WHAT'S NEW
+          </h5>
+          <div class="card-body card_1 hsbhdb shadow-sm">
+            <div class="news-list">
+              <div class="marquee-container">
+                <div class="marquee-inner">
+                  <div class="marquee-item">
+                    <div class="date">October 11, 2024</div>
+                    <div class="title">
+                      National Conference on Registration System in India
+                    </div>
+                    <a href="#" class="btn read-more-btn view-pdf">View PDF</a>
+                  </div>
+
+                  <div class="marquee-item">
+                    <div class="date">October 11, 2024</div>
+                    <div class="title">
+                      eProcurement System Government of Haryana. Directorate
+                      Urban Administration and Development
+                    </div>
+                    <a href="#" class="btn read-more-btn view-pdf">View PDF</a>
+                  </div>
+
+                  <div class="marquee-item">
+                    <div class="date">October 11, 2024</div>
+                    <div class="title">
+                      Directorate Urban Administration and Development...
+                    </div>
+                    <a href="#" class="btn read-more-btn view-pdf">View PDF</a>
+                  </div>
+                </div>
+
+                <!-- Read More Button Outside Marquee -->
+                <div class="read-more-wrapper">
+                  <a
+                    class="read-more-link"
+                    target="_blank"
+                    href="/Home/AllNotification"
+                    >Read More<i class="bi bi-arrow-right"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- NOTICE BOARD -->
+      <div class="notice-board">
+        <h3>Notice Board</h3>
+        <ul>
+          <li *ngFor="let notice of notices">
+            <mat-icon>campaign</mat-icon>
+            <span>{{ notice }}</span>
+          </li>
+        </ul>
+      </div>
+  </div>
+</section>
+
