@@ -36,7 +36,7 @@ import { CaseTypesComponent, CaseTypeDialogComponent } from './case-types/case-t
 import { ActsComponent, ActDialogComponent } from './acts/acts.component';
 import { CaseNaturesComponent, CaseNatureDialogComponent } from './case-natures/case-natures.component';
 import { CourtsComponent, CourtDialogComponent } from './courts/courts.component';
-import { FormSchemaBuilderComponent, FormFieldDialogComponent } from './form-schema-builder/form-schema-builder.component';
+import { FormSchemaBuilderComponent, FormFieldDialogComponent, FormFieldGroupDialogComponent } from './form-schema-builder/form-schema-builder.component';
 import { SystemSettingsComponent } from './system-settings/system-settings.component';
 import { WorkflowListComponent } from './workflows/workflow-list/workflow-list.component';
 import { WorkflowBuilderComponent } from './workflows/workflow-builder/workflow-builder.component';
@@ -170,6 +170,7 @@ const routes: Routes = [
     CourtDialogComponent,
     FormSchemaBuilderComponent,
     FormFieldDialogComponent,
+    FormFieldGroupDialogComponent,
     SystemSettingsComponent,
     WorkflowListComponent,
     WorkflowBuilderComponent,

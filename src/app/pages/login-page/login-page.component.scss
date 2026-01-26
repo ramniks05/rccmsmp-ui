@@ -50,6 +50,13 @@
   gap: 8px;
 }
 
+.language-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
 .language-dropdown {
   padding: 4px 8px;
   border-radius: 4px;

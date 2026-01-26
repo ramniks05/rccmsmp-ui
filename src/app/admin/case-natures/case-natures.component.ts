@@ -4,14 +4,15 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdminService } from '../admin.service';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 /**
  * Case Natures Component
- * Manages case natures with CRUD operations
+ * Manages case natures (legal matters: MUTATION_GIFT_SALE, PARTITION, etc.) only.
+ * Uses Case Natures API: /api/case-natures/active, /api/admin/case-natures
  */
 @Component({
   selector: 'app-case-natures',
@@ -19,15 +20,15 @@ import { throwError } from 'rxjs';
   styleUrls: ['./case-natures.component.scss']
 })
 export class CaseNaturesComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['id', 'natureCode', 'natureName', 'caseTypeName', 'courtLevel', 'isAppeal', 'isActive', 'actions'];
+  displayedColumns: string[] = ['id', 'code', 'name', 'actName', 'isActive', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
-  
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   isLoading = false;
   errorMessage = '';
-  caseTypes: any[] = [];
+  acts: any[] = [];
 
   constructor(
     private adminService: AdminService,
@@ -36,7 +37,7 @@ export class CaseNaturesComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadCaseTypes();
+    this.loadActs();
     this.loadCaseNatures();
   }
 
@@ -46,370 +47,265 @@ export class CaseNaturesComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Load case types for dropdown
+   * Load acts for dropdown — Acts API: GET /api/admin/acts
    */
-  loadCaseTypes(): void {
-    this.adminService.getActiveCaseTypes()
+  loadActs(): void {
+    this.adminService.getAllActs()
       .pipe(
-        catchError(error => {
-          return throwError(() => error);
+        catchError(err => {
+          console.error('Error loading acts:', err);
+          this.showError('Failed to load acts. Please refresh the page.');
+          return throwError(() => err);
         })
       )
       .subscribe({
-        next: (response) => {
-          const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
-          if (apiResponse.success) {
-            this.caseTypes = apiResponse.data || [];
+        next: (res) => {
+          const r = res?.success !== undefined ? res : { success: true, data: res };
+          if (r.success) {
+            this.acts = r.data || [];
+            console.log('Acts loaded:', this.acts.length);
           }
+        },
+        error: () => {
+          // Error already handled in catchError
         }
       });
   }
 
   /**
-   * Load all case natures
+   * Load case natures via Case Natures API — GET /api/admin/case-natures
    */
   loadCaseNatures(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
     this.adminService.getAllCaseNatures()
       .pipe(
-        catchError(error => {
+        catchError(err => {
           this.isLoading = false;
-          this.handleError(error);
-          return throwError(() => error);
+          this.handleError(err);
+          return throwError(() => err);
         })
       )
       .subscribe({
-        next: (response) => {
+        next: (res) => {
           this.isLoading = false;
-          const apiResponse = response?.success !== undefined ? response : { success: true, data: response };
-          if (apiResponse.success) {
-            this.dataSource.data = apiResponse.data || [];
-          }
+          const r = res?.success !== undefined ? res : { success: true, data: res };
+          if (r.success) this.dataSource.data = r.data || [];
         },
-        error: () => {
-          this.isLoading = false;
-        }
+        error: () => { this.isLoading = false; }
       });
   }
 
-  /**
-   * Open create dialog
-   */
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(CaseNatureDialogComponent, {
-      width: '800px',
-      data: { mode: 'create', caseTypes: this.caseTypes }
+    const ref = this.dialog.open(CaseNatureDialogComponent, {
+      width: '600px',
+      data: { mode: 'create', acts: this.acts }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCaseNatures();
-      }
-    });
+    ref.afterClosed().subscribe(ok => { if (ok) this.loadCaseNatures(); });
   }
 
-  /**
-   * Open edit dialog
-   */
-  openEditDialog(caseNature: any): void {
-    const dialogRef = this.dialog.open(CaseNatureDialogComponent, {
-      width: '800px',
-      data: { mode: 'edit', caseNature: caseNature, caseTypes: this.caseTypes }
+  openEditDialog(row: any): void {
+    const ref = this.dialog.open(CaseNatureDialogComponent, {
+      width: '600px',
+      data: { mode: 'edit', caseNature: row, acts: this.acts }
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadCaseNatures();
-      }
-    });
+    ref.afterClosed().subscribe(ok => { if (ok) this.loadCaseNatures(); });
   }
 
-  /**
-   * Delete case nature
-   */
-  deleteCaseNature(caseNature: any): void {
-    if (confirm(`Are you sure you want to delete "${caseNature.natureName}"?`)) {
-      this.isLoading = true;
-      this.adminService.deleteCaseNature(caseNature.id)
-        .pipe(
-          catchError(error => {
-            this.isLoading = false;
-            this.showError(error.error?.message || 'Failed to delete case nature');
-            return throwError(() => error);
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this.isLoading = false;
-            const apiResponse = response?.success !== undefined ? response : { success: true };
-            if (apiResponse.success) {
-              this.showSuccess('Case nature deleted successfully');
-              this.loadCaseNatures();
-            }
-          },
-          error: () => {
-            this.isLoading = false;
+  deleteCaseNature(row: any): void {
+    const name = row?.name || row?.code || 'this case nature';
+    if (!confirm(`Delete "${name}"?`)) return;
+    this.isLoading = true;
+    this.adminService.deleteCaseNature(row.id)
+      .pipe(
+        catchError(err => {
+          this.isLoading = false;
+          this.showError(err.error?.message || 'Delete failed');
+          return throwError(() => err);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.isLoading = false;
+          const r = res?.success !== undefined ? res : { success: true };
+          if (r.success) {
+            this.showSuccess('Case nature deleted');
+            this.loadCaseNatures();
           }
-        });
-    }
+        },
+        error: () => { this.isLoading = false; }
+      });
   }
 
-  /**
-   * Apply filter to table
-   */
   applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    const v = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = v.trim().toLowerCase();
+    this.dataSource.paginator?.firstPage();
   }
 
-  /**
-   * Handle errors
-   */
-  private handleError(error: any): void {
-    if (error.error?.message) {
-      this.errorMessage = error.error.message;
-    } else if (error.status === 401) {
-      this.errorMessage = 'Unauthorized. Please login again.';
-    } else {
-      this.errorMessage = 'Failed to load case natures. Please try again.';
-    }
+  private handleError(err: any): void {
+    this.errorMessage = err.error?.message || (err.status === 401 ? 'Unauthorized' : 'Failed to load case natures');
   }
 
-  /**
-   * Show success message
-   */
-  private showSuccess(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top'
-    });
+  private showSuccess(msg: string): void {
+    this.snackBar.open(msg, 'Close', { duration: 3000, horizontalPosition: 'end', verticalPosition: 'top' });
   }
 
-  /**
-   * Show error message
-   */
-  private showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 5000,
-      horizontalPosition: 'end',
-      verticalPosition: 'top',
-      panelClass: ['error-snackbar']
-    });
+  private showError(msg: string): void {
+    this.snackBar.open(msg, 'Close', { duration: 5000, horizontalPosition: 'end', verticalPosition: 'top', panelClass: ['error-snackbar'] });
   }
 }
 
 /**
- * Dialog Component for Create/Edit Case Nature
+ * Dialog for Create/Edit Case Nature.
+ * Case Natures API: POST/PUT /api/admin/case-natures
+ * Body: { name, code, description, actId, isActive }
+ * Note: workflowCode has been moved to Case Type (each case type can have its own workflow)
  */
 @Component({
   selector: 'app-case-nature-dialog',
   template: `
     <h2 mat-dialog-title>{{ data.mode === 'create' ? 'Create' : 'Edit' }} Case Nature</h2>
     <mat-dialog-content>
-      <form [formGroup]="caseNatureForm" class="case-nature-form">
+      <form [formGroup]="f" class="form">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Case Type *</mat-label>
-          <mat-select formControlName="caseTypeId">
-            <mat-option *ngFor="let ct of data.caseTypes" [value]="ct.id">
-              {{ ct.name }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="caseNatureForm.get('caseTypeId')?.hasError('required')">Case Type is required</mat-error>
+          <mat-label>Code *</mat-label>
+          <input matInput formControlName="code" placeholder="e.g. MUTATION_GIFT_SALE">
+          <mat-error>Code is required</mat-error>
         </mat-form-field>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Nature Code *</mat-label>
-            <input matInput formControlName="natureCode" placeholder="e.g., NEW_FILE">
-            <mat-error *ngIf="caseNatureForm.get('natureCode')?.hasError('required')">Nature Code is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Nature Name *</mat-label>
-            <input matInput formControlName="natureName" placeholder="e.g., New File">
-            <mat-error *ngIf="caseNatureForm.get('natureName')?.hasError('required')">Nature Name is required</mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>Court Level *</mat-label>
-            <mat-select formControlName="courtLevel">
-              <mat-option value="CIRCLE">Circle</mat-option>
-              <mat-option value="SUB_DIVISION">Sub-Division</mat-option>
-              <mat-option value="DISTRICT">District</mat-option>
-              <mat-option value="STATE">State</mat-option>
-            </mat-select>
-            <mat-error *ngIf="caseNatureForm.get('courtLevel')?.hasError('required')">Court Level is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="half-width">
-            <mat-label>From Level (for appeals)</mat-label>
-            <mat-select formControlName="fromLevel">
-              <mat-option [value]="null">None (New File)</mat-option>
-              <mat-option value="CIRCLE">Circle</mat-option>
-              <mat-option value="SUB_DIVISION">Sub-Division</mat-option>
-              <mat-option value="DISTRICT">District</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Court Types *</mat-label>
-          <mat-select formControlName="courtTypes" multiple>
-            <mat-option value="SDC_COURT">SDC Court</mat-option>
-            <mat-option value="SDO_COURT">SDO Court</mat-option>
-            <mat-option value="DC_COURT">DC Court</mat-option>
-            <mat-option value="REVENUE_COURT">Revenue Court</mat-option>
-            <mat-option value="REVENUE_TRIBUNAL">Revenue Tribunal</mat-option>
-            <mat-option value="STATE_TRIBUNAL">State Tribunal</mat-option>
-          </mat-select>
-          <mat-error *ngIf="caseNatureForm.get('courtTypes')?.hasError('required')">At least one Court Type is required</mat-error>
+          <mat-label>Name *</mat-label>
+          <input matInput formControlName="name" placeholder="e.g. Mutation (after Gift/Sale Deeds)">
+          <mat-error>Name is required</mat-error>
         </mat-form-field>
-
-        <div class="form-row">
-          <mat-checkbox formControlName="isAppeal">Is Appeal</mat-checkbox>
-          <mat-form-field appearance="outline" class="half-width" *ngIf="caseNatureForm.get('isAppeal')?.value">
-            <mat-label>Appeal Order</mat-label>
-            <input matInput type="number" formControlName="appealOrder" min="0" placeholder="0, 1, 2...">
-            <mat-hint>0 for new files, 1 for first appeal, 2 for second appeal</mat-hint>
-          </mat-form-field>
-        </div>
-
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Act</mat-label>
+          <mat-select formControlName="actId">
+            <mat-option [value]="null">None</mat-option>
+            <mat-option *ngFor="let a of acts" [value]="a.id">{{ a.actName }} ({{ a.actYear }})</mat-option>
+          </mat-select>
+        </mat-form-field>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="3" placeholder="Enter description"></textarea>
+          <textarea matInput formControlName="description" rows="3"></textarea>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Display Order</mat-label>
-          <input matInput type="number" formControlName="displayOrder" min="0" placeholder="1">
-        </mat-form-field>
-
         <mat-checkbox formControlName="isActive">Active</mat-checkbox>
       </form>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="caseNatureForm.invalid || isLoading">
-        <mat-spinner *ngIf="isLoading" diameter="20" class="button-spinner"></mat-spinner>
-        <span *ngIf="!isLoading">{{ data.mode === 'create' ? 'Create' : 'Update' }}</span>
+      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="f.invalid || saving">
+        <mat-spinner *ngIf="saving" diameter="20" class="btn-spin"></mat-spinner>
+        <span *ngIf="!saving">{{ data.mode === 'create' ? 'Create' : 'Update' }}</span>
       </button>
     </mat-dialog-actions>
   `,
   styles: [`
-    .case-nature-form {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 20px 0;
-      min-width: 700px;
-    }
-    .full-width {
-      width: 100%;
-    }
-    .form-row {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    .half-width {
-      flex: 1;
-    }
-    .button-spinner {
-      display: inline-block;
-      margin-right: 8px;
-    }
+    .form { display: flex; flex-direction: column; gap: 16px; padding: 16px 0; min-width: 500px; }
+    .full-width { width: 100%; }
+    .form-row { display: flex; gap: 16px; }
+    .half { flex: 1; }
+    .btn-spin { display: inline-block; margin-right: 8px; }
   `]
 })
 export class CaseNatureDialogComponent {
-  caseNatureForm: FormGroup;
-  isLoading = false;
+  f: FormGroup;
+  saving = false;
+  acts: any[] = [];
+  private actIdToSet: number | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private adminService: AdminService,
-    public dialogRef: MatDialogRef<CaseNatureDialogComponent>,
+    private admin: AdminService,
+    public ref: MatDialogRef<CaseNatureDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBar
+    private snack: MatSnackBar
   ) {
-    this.caseNatureForm = this.fb.group({
-      caseTypeId: ['', [Validators.required]],
-      natureCode: ['', [Validators.required]],
-      natureName: ['', [Validators.required]],
-      courtLevel: ['', [Validators.required]],
-      courtTypes: [[], [Validators.required]],
-      fromLevel: [null],
-      isAppeal: [false],
-      appealOrder: [0],
+    // Use provided acts or load them if not available
+    this.acts = data.acts || [];
+    
+    // Initialize form
+    this.f = this.fb.group({
+      code: ['', Validators.required],
+      name: ['', Validators.required],
+      actId: [null],
       description: [''],
-      displayOrder: [1],
       isActive: [true]
     });
-
+    
+    // If acts are not provided or empty, load them
+    if (!this.acts || this.acts.length === 0) {
+      this.loadActs();
+    }
+    
+    // Set form values for edit mode
     if (data.mode === 'edit' && data.caseNature) {
-      this.caseNatureForm.patchValue({
-        caseTypeId: data.caseNature.caseTypeId,
-        natureCode: data.caseNature.natureCode,
-        natureName: data.caseNature.natureName,
-        courtLevel: data.caseNature.courtLevel,
-        courtTypes: data.caseNature.courtTypes || [],
-        fromLevel: data.caseNature.fromLevel,
-        isAppeal: data.caseNature.isAppeal || false,
-        appealOrder: data.caseNature.appealOrder || 0,
-        description: data.caseNature.description || '',
-        displayOrder: data.caseNature.displayOrder || 1,
-        isActive: data.caseNature.isActive !== false
+      const n = data.caseNature;
+      this.actIdToSet = n.actId ?? null;
+      
+      this.f.patchValue({
+        code: n.code || '',
+        name: n.name || '',
+        actId: this.acts.length > 0 ? this.actIdToSet : null, // Set actId only if acts are loaded
+        description: n.description || '',
+        isActive: n.isActive !== false
       });
     }
   }
 
-  onCancel(): void {
-    this.dialogRef.close();
+  /**
+   * Load acts if not provided — Acts API: GET /api/admin/acts
+   */
+  private loadActs(): void {
+    this.admin.getAllActs()
+      .pipe(
+        catchError(err => {
+          console.error('Error loading acts in dialog:', err);
+          this.snack.open('Failed to load acts', 'Close', { duration: 3000 });
+          return throwError(() => err);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          const r = res?.success !== undefined ? res : { success: true, data: res };
+          if (r.success) {
+            this.acts = r.data || [];
+            console.log('Acts loaded in dialog:', this.acts.length);
+            // If we have an actId to set (from edit mode), set it now
+            if (this.actIdToSet !== null && this.acts.length > 0) {
+              this.f.patchValue({ actId: this.actIdToSet });
+            }
+          }
+        }
+      });
   }
 
-  onSave(): void {
-    if (this.caseNatureForm.valid) {
-      this.isLoading = true;
-      const formValue = this.caseNatureForm.value;
+  cancel(): void { this.ref.close(); }
 
-      const caseNatureData = {
-        ...formValue,
-        fromLevel: formValue.fromLevel || null
-      };
-
-      const request = this.data.mode === 'create'
-        ? this.adminService.createCaseNature(caseNatureData)
-        : this.adminService.updateCaseNature(this.data.caseNature.id, caseNatureData);
-
-      request
-        .pipe(
-          catchError(error => {
-            this.isLoading = false;
-            this.snackBar.open(error.error?.message || 'Operation failed', 'Close', { duration: 3000 });
-            return throwError(() => error);
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            this.isLoading = false;
-            const apiResponse = response?.success !== undefined ? response : { success: true };
-            if (apiResponse.success) {
-              this.snackBar.open(`Case nature ${this.data.mode === 'create' ? 'created' : 'updated'} successfully`, 'Close', { duration: 3000 });
-              this.dialogRef.close(true);
-            }
-          },
-          error: () => {
-            this.isLoading = false;
-          }
-        });
-    }
+  save(): void {
+    if (this.f.invalid) return;
+    this.saving = true;
+    // Note: workflowCode removed - it's now managed at Case Type level
+    const payload = { ...this.f.value, actId: this.f.value.actId || null };
+    const req = this.data.mode === 'create'
+      ? this.admin.createCaseNature(payload)
+      : this.admin.updateCaseNature(this.data.caseNature.id, payload);
+    req.pipe(
+      catchError(err => {
+        this.saving = false;
+        this.snack.open(err.error?.message || 'Save failed', 'Close', { duration: 3000 });
+        return throwError(() => err);
+      })
+    ).subscribe({
+      next: (res) => {
+        this.saving = false;
+        const r = res?.success !== undefined ? res : { success: true };
+        if (r.success) {
+          this.snack.open(`Case nature ${this.data.mode === 'create' ? 'created' : 'updated'}`, 'Close', { duration: 3000 });
+          this.ref.close(true);
+        }
+      },
+      error: () => { this.saving = false; }
+    });
   }
 }

@@ -195,7 +195,8 @@ export class AdminService {
   // ==================== Administrative Units Management ====================
 
   /**
-   * Create Administrative Unit
+   * POST /api/admin-units — Create Administrative Unit (Admin)
+   * Note: Admin CRUD operations may not be documented, using standard pattern
    */
   createAdminUnit(unit: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin-units`, unit, {
@@ -204,7 +205,7 @@ export class AdminService {
   }
 
   /**
-   * Get All Administrative Units
+   * GET /api/admin-units — Get All Administrative Units (Admin)
    */
   getAllAdminUnits(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin-units`, {
@@ -213,7 +214,8 @@ export class AdminService {
   }
 
   /**
-   * Get Active Administrative Units
+   * GET /api/admin-units/active — Get Active Administrative Units (Public)
+   * Matches documentation: Administrative Units API
    */
   getActiveAdminUnits(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin-units/active`, {
@@ -222,7 +224,7 @@ export class AdminService {
   }
 
   /**
-   * Get Administrative Units by Level
+   * GET /api/admin-units/level/{level} — Get Administrative Units by Level (Admin)
    */
   getAdminUnitsByLevel(level: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin-units/level/${level}`, {
@@ -231,7 +233,8 @@ export class AdminService {
   }
 
   /**
-   * Get Administrative Units by Parent
+   * GET /api/admin-units/parent/{parentId} — Get Units by Parent (Public)
+   * Matches documentation: Administrative Units API
    */
   getAdminUnitsByParent(parentId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin-units/parent/${parentId}`, {
@@ -240,7 +243,8 @@ export class AdminService {
   }
 
   /**
-   * Get Root Units
+   * GET /api/admin-units/root — Get Root Units (Public)
+   * Matches documentation: Administrative Units API
    */
   getRootUnits(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin-units/root`, {
@@ -284,19 +288,20 @@ export class AdminService {
     });
   }
 
-  // ==================== Case Types Management ====================
+  // ==================== Case Types API (filing types: NEW_FILE, APPEAL, REVISION) ====================
 
   /**
-   * Create Case Type
+   * POST /api/admin/case-types — Case Types API
+   * Body: { caseNatureId, typeCode, typeName, courtLevel, courtTypes, fromLevel, isAppeal, appealOrder, description, workflowCode, isActive, displayOrder }
    */
   createCaseType(caseType: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/case-types`, caseType, {
+    return this.http.post(`${this.baseUrl}/admin/case-types`, caseType, {
       headers: this.getAuthHeaders()
     });
   }
 
   /**
-   * Get All Case Types
+   * GET /api/admin/case-types — Case Types API
    */
   getAllCaseTypes(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/case-types`, {
@@ -305,12 +310,11 @@ export class AdminService {
   }
 
   /**
-   * Get Active Case Types
+   * GET /api/public/case-types/case-nature/{caseNatureId} — Case Types API
+   * Returns case types (filing types) for a given case nature.
    */
-  getActiveCaseTypes(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/case-types/active`, {
-      headers: this.getAuthHeaders()
-    });
+  getCaseTypesByCaseNature(caseNatureId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/public/case-types/case-nature/${caseNatureId}`);
   }
 
   /**
@@ -323,19 +327,10 @@ export class AdminService {
   }
 
   /**
-   * Get Case Type by Code
-   */
-  getCaseTypeByCode(code: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/case-types/code/${code}`, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  /**
    * Update Case Type
    */
   updateCaseType(id: number, caseType: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/case-types/${id}`, caseType, {
+    return this.http.put(`${this.baseUrl}/admin/case-types/${id}`, caseType, {
       headers: this.getAuthHeaders()
     });
   }
@@ -344,33 +339,24 @@ export class AdminService {
    * Delete Case Type
    */
   deleteCaseType(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/case-types/${id}`, {
+    return this.http.delete(`${this.baseUrl}/admin/case-types/${id}`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  /**
-   * Hard Delete Case Type
-   */
-  hardDeleteCaseType(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/case-types/${id}/hard`, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  // ==================== Form Schema Management ====================
+  // ==================== Form Schema Management (by Case Type) ====================
 
   /**
-   * Get Form Schema for Case Type
+   * GET /api/admin/form-schemas/case-types/{caseTypeId} — Get Form Schema for Case Type
+   * No authentication required - Public endpoint
    */
   getFormSchema(caseTypeId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, {
-      headers: this.getAuthHeaders()
-    });
+    return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`);
   }
 
   /**
-   * Validate Form Data
+   * POST /api/admin/form-schemas/validate — Validate Form Data
+   * Body: { caseTypeId, formData }
    */
   validateFormData(caseTypeId: number, formData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/form-schemas/validate`, {
@@ -382,8 +368,7 @@ export class AdminService {
   }
 
   /**
-   * Save/Create Form Schema
-   * TODO: Verify the actual API endpoint format
+   * POST /api/admin/form-schemas/case-types/{caseTypeId} — Save/Create Form Schema
    */
   saveFormSchema(caseTypeId: number, schema: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, schema, {
@@ -392,7 +377,7 @@ export class AdminService {
   }
 
   /**
-   * Update Form Schema
+   * PUT /api/admin/form-schemas/case-types/{caseTypeId} — Update Form Schema
    */
   updateFormSchema(caseTypeId: number, schema: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}`, schema, {
@@ -403,7 +388,7 @@ export class AdminService {
   // ==================== Form Field Management ====================
 
   /**
-   * Get All Fields (Including Inactive)
+   * GET /api/admin/form-schemas/case-types/{caseTypeId}/fields — Get All Fields (Including Inactive) for a Case Type
    */
   getAllFormFields(caseTypeId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/fields`, {
@@ -448,7 +433,7 @@ export class AdminService {
   }
 
   /**
-   * Reorder fields
+   * PUT /api/admin/form-schemas/case-types/{caseTypeId}/fields/reorder — Reorder fields for a Case Type
    */
   reorderFields(caseTypeId: number, fieldOrders: Array<{fieldId: number, displayOrder: number}>): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/fields/reorder`, {
@@ -458,10 +443,51 @@ export class AdminService {
     });
   }
 
+  // ==================== Field Group Management ====================
+
+  /**
+   * GET /api/admin/form-schemas/case-types/{caseTypeId}/field-groups — Get Active Field Groups for Case Type
+   */
+  getFieldGroups(caseTypeId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/form-schemas/case-types/${caseTypeId}/field-groups`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * POST /api/admin/form-schemas/field-groups — Create Field Group
+   * Body: { caseTypeId, groupCode, groupLabel, description, displayOrder, isActive }
+   */
+  createFieldGroup(group: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/admin/form-schemas/field-groups`, group, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * PUT /api/admin/form-schemas/field-groups/{id} — Update Field Group
+   * Body: { caseTypeId, groupCode, groupLabel, description, displayOrder, isActive }
+   */
+  updateFieldGroup(id: number, group: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/admin/form-schemas/field-groups/${id}`, group, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * DELETE /api/admin/form-schemas/field-groups/{id} — Delete Field Group
+   */
+  deleteFieldGroup(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/admin/form-schemas/field-groups/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // ==================== Acts Management ====================
 
   /**
-   * Get All Active Acts
+   * GET /api/admin/acts — Get All Active Acts (Admin)
+   * Matches documentation: Acts API
    */
   getAllActs(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/acts`, {
@@ -470,7 +496,7 @@ export class AdminService {
   }
 
   /**
-   * Get Act by ID
+   * GET /api/admin/acts/{id} — Get Act by ID (Admin)
    */
   getActById(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/acts/${id}`, {
@@ -478,9 +504,10 @@ export class AdminService {
     });
   }
 
-
   /**
-   * Create Act
+   * POST /api/admin/acts — Create Act (Admin)
+   * Matches documentation: Acts API
+   * Body: { actCode, actName, actYear, description, sections, isActive }
    */
   createAct(act: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/acts`, act, {
@@ -489,7 +516,7 @@ export class AdminService {
   }
 
   /**
-   * Update Act
+   * PUT /api/admin/acts/{id} — Update Act (Admin)
    */
   updateAct(id: number, act: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/acts/${id}`, act, {
@@ -498,7 +525,7 @@ export class AdminService {
   }
 
   /**
-   * Delete Act
+   * DELETE /api/admin/acts/{id} — Delete Act (Admin)
    */
   deleteAct(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/acts/${id}`, {
@@ -506,28 +533,24 @@ export class AdminService {
     });
   }
 
-  // ==================== Case Natures Management ====================
+  // ==================== Case Natures API (legal matters: MUTATION_GIFT_SALE, PARTITION) ====================
 
   /**
-   * Get All Case Natures
+   * GET /api/case-natures/active — Case Natures API
+   */
+  getActiveCaseNatures(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/case-natures/active`);
+  }
+
+  /**
+   * GET /api/admin/case-natures — Case Natures API (Public - read-only, no authentication required)
    */
   getAllCaseNatures(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/case-natures`, {
-      headers: this.getAuthHeaders()
-    });
+    return this.http.get(`${this.baseUrl}/admin/case-natures`);
   }
 
   /**
-   * Get Case Natures by Case Type
-   */
-  getCaseNaturesByCaseType(caseTypeId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/case-natures/case-type/${caseTypeId}`, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  /**
-   * Get Case Nature by ID
+   * GET /api/admin/case-natures/{id} — Case Natures API
    */
   getCaseNatureById(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/case-natures/${id}`, {
@@ -536,7 +559,11 @@ export class AdminService {
   }
 
   /**
-   * Create Case Nature
+   * POST /api/admin/case-natures — Case Natures API
+   * Note: Documentation shows POST /api/case-natures, but summary indicates admin endpoints are under /api/admin/case-natures/*
+   * Using /admin/case-natures for consistency with other admin endpoints (case-types, acts, courts)
+   * Body: { name, code, description, actId, isActive }
+   * Note: workflowCode has been moved to Case Type level
    */
   createCaseNature(caseNature: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/case-natures`, caseNature, {
@@ -545,7 +572,7 @@ export class AdminService {
   }
 
   /**
-   * Update Case Nature
+   * PUT /api/admin/case-natures/{id} — Case Natures API
    */
   updateCaseNature(id: number, caseNature: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/case-natures/${id}`, caseNature, {
@@ -554,7 +581,7 @@ export class AdminService {
   }
 
   /**
-   * Delete Case Nature
+   * DELETE /api/admin/case-natures/{id} — Case Natures API
    */
   deleteCaseNature(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/case-natures/${id}`, {
@@ -565,7 +592,8 @@ export class AdminService {
   // ==================== Courts Management ====================
 
   /**
-   * Get All Courts
+   * GET /api/admin/courts — Get All Courts (Admin)
+   * Matches documentation: Courts API
    */
   getAllCourts(): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/courts`, {
@@ -574,7 +602,8 @@ export class AdminService {
   }
 
   /**
-   * Get Courts by Level
+   * GET /api/admin/courts/level/{level} — Get Courts by Level (Admin)
+   * Matches documentation: Courts API
    */
   getCourtsByLevel(level: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/courts/level/${level}`, {
@@ -583,7 +612,7 @@ export class AdminService {
   }
 
   /**
-   * Get Court by ID
+   * GET /api/admin/courts/{id} — Get Court by ID (Admin)
    */
   getCourtById(id: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/admin/courts/${id}`, {
@@ -592,7 +621,9 @@ export class AdminService {
   }
 
   /**
-   * Create Court
+   * POST /api/admin/courts — Create Court (Admin)
+   * Matches documentation: Courts API
+   * Body: { courtCode, courtName, courtLevel, courtType, unitId, designation, address, contactNumber, email, isActive }
    */
   createCourt(court: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/admin/courts`, court, {
@@ -601,7 +632,7 @@ export class AdminService {
   }
 
   /**
-   * Update Court
+   * PUT /api/admin/courts/{id} — Update Court (Admin)
    */
   updateCourt(id: number, court: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/admin/courts/${id}`, court, {
@@ -610,7 +641,7 @@ export class AdminService {
   }
 
   /**
-   * Delete Court
+   * DELETE /api/admin/courts/{id} — Delete Court (Admin)
    */
   deleteCourt(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/admin/courts/${id}`, {
@@ -618,10 +649,33 @@ export class AdminService {
     });
   }
 
+  /**
+   * GET /api/public/courts/available?caseTypeId={caseTypeId}&unitId={unitId} — Get Available Courts (Public)
+   * Matches documentation: Courts API
+   * Returns courts available for a specific case type and user's unit
+   */
+  getAvailableCourts(caseTypeId: number, unitId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/public/courts/available?caseTypeId=${caseTypeId}&unitId=${unitId}`);
+  }
+
+  // ==================== Workflow Management ====================
+
+  /**
+   * GET /api/admin/workflow/definitions/active — Get Active Workflows
+   * Returns list of active workflows for dropdown selection
+   */
+  getActiveWorkflows(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/workflow/definitions/active`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // ==================== Case Management ====================
 
   /**
-   * Create Case
+   * POST /api/cases — Create Case (Admin)
+   * Matches documentation: Cases API
+   * Body: { caseNatureId, caseTypeId, applicantId, unitId, courtId, originalOrderLevel, subject, description, priority, applicationDate, remarks, caseData }
    */
   createCase(caseData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/cases`, caseData, {
