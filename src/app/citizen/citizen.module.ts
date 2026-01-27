@@ -28,6 +28,7 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
 import { MyCasesComponent } from './my-cases/my-cases.component';
 import { CaseDetailsComponent } from './case-details/case-details.component';
 import { CaseResubmitComponent } from './case-resubmit/case-resubmit.component';
+import { AvailableActionsComponent } from './available-actions/available-actions.component';
 
 /**
  * Routes for Citizen Module
@@ -97,6 +98,7 @@ const routes: Routes = [
     MyCasesComponent,
     CaseDetailsComponent,
     CaseResubmitComponent,
+    AvailableActionsComponent,
   ],
   imports: [
     CommonModule,

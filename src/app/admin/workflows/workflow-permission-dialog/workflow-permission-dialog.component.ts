@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkflowConfigService, WorkflowPermission } from '../../services/workflow-config.service';
+import type { ConditionsPayload } from '../../../core/models/workflow-condition.types';
 
 @Component({
   selector: 'app-workflow-permission-dialog',
@@ -12,6 +13,8 @@ import { WorkflowConfigService, WorkflowPermission } from '../../services/workfl
 export class WorkflowPermissionDialogComponent implements OnInit {
   permissionForm: FormGroup;
   isSubmitting = false;
+  /** Latest conditions from workflow condition editor. */
+  currentConditions: ConditionsPayload = {};
 
   unitLevels = ['STATE', 'DISTRICT', 'SUB_DIVISION', 'CIRCLE'];
   hierarchyRules = ['SAME_UNIT', 'PARENT_UNIT', 'ANY_UNIT', 'SUPERVISOR'];
@@ -34,7 +37,6 @@ export class WorkflowPermissionDialogComponent implements OnInit {
       canInitiate: [false],
       canApprove: [false],
       hierarchyRule: [''],
-      conditions: [''],
       isActive: [true]
     });
   }
@@ -47,10 +49,13 @@ export class WorkflowPermissionDialogComponent implements OnInit {
         canInitiate: this.data.permission.canInitiate,
         canApprove: this.data.permission.canApprove,
         hierarchyRule: this.data.permission.hierarchyRule || '',
-        conditions: this.data.permission.conditions || '',
         isActive: this.data.permission.isActive !== false
       });
     }
+  }
+
+  onConditionsChange(payload: ConditionsPayload): void {
+    this.currentConditions = payload;
   }
 
   onSubmit(): void {
@@ -60,13 +65,17 @@ export class WorkflowPermissionDialogComponent implements OnInit {
 
     this.isSubmitting = true;
     const formValue = this.permissionForm.value;
+    const conditionsJson =
+      Object.keys(this.currentConditions).length > 0
+        ? JSON.stringify(this.currentConditions)
+        : undefined;
     const permission: WorkflowPermission = {
       roleCode: formValue.roleCode,
       unitLevel: formValue.unitLevel || null,
       canInitiate: formValue.canInitiate,
       canApprove: formValue.canApprove,
       hierarchyRule: formValue.hierarchyRule || undefined,
-      conditions: formValue.conditions || undefined,
+      conditions: conditionsJson,
       isActive: formValue.isActive
     };
 

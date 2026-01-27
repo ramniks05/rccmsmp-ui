@@ -44,6 +44,8 @@ import { WorkflowTransitionsComponent } from './workflows/workflow-transitions/w
 import { WorkflowTransitionDialogComponent } from './workflows/workflow-transition-dialog/workflow-transition-dialog.component';
 import { WorkflowPermissionsComponent } from './workflows/workflow-permissions/workflow-permissions.component';
 import { WorkflowPermissionDialogComponent } from './workflows/workflow-permission-dialog/workflow-permission-dialog.component';
+import { WorkflowConditionEditorComponent } from './workflows/workflow-condition-editor/workflow-condition-editor.component';
+import { ViewTransitionConditionsDialogComponent } from './workflows/view-transition-conditions-dialog/view-transition-conditions-dialog.component';
 import { RegistrationFormsComponent } from './registration-forms/registration-forms.component';
 import { RegistrationFormFieldDialogComponent } from './registration-forms/registration-form-field-dialog/registration-form-field-dialog.component';
 import { RegistrationFormGroupsComponent } from './registration-forms/registration-form-groups/registration-form-groups.component';
@@ -153,6 +155,8 @@ const routes: Routes = [
     WorkflowTransitionDialogComponent,
     WorkflowPermissionsComponent,
     WorkflowPermissionDialogComponent,
+    WorkflowConditionEditorComponent,
+    ViewTransitionConditionsDialogComponent,
     RegistrationFormsComponent,
     RegistrationFormFieldDialogComponent,
     RegistrationFormGroupsComponent,

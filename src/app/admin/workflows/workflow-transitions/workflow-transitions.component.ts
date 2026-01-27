@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkflowConfigService, WorkflowState, WorkflowTransition } from '../../services/workflow-config.service';
 import { WorkflowTransitionDialogComponent } from '../workflow-transition-dialog/workflow-transition-dialog.component';
+import { ViewTransitionConditionsDialogComponent } from '../view-transition-conditions-dialog/view-transition-conditions-dialog.component';
 
 @Component({
   selector: 'app-workflow-transitions',
@@ -105,5 +106,16 @@ export class WorkflowTransitionsComponent implements OnInit, OnChanges {
 
   selectTransition(transition: WorkflowTransition): void {
     this.transitionSelected.emit(transition);
+  }
+
+  openViewConditionsDialog(transition: WorkflowTransition): void {
+    this.dialog.open(ViewTransitionConditionsDialogComponent, {
+      width: '560px',
+      data: {
+        transition,
+        fromStateName: this.getStateName(transition.fromStateId),
+        toStateName: this.getStateName(transition.toStateId)
+      }
+    });
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import type { WorkflowCondition } from '../../core/models/workflow-condition.types';
 
 export interface WorkflowDefinition {
   id?: number;
@@ -249,6 +250,19 @@ export class WorkflowConfigService {
   deletePermission(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(
       `${this.apiUrl}/permissions/${id}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // ==================== Transition Conditions (Admin) ====================
+
+  /**
+   * Get configured conditions for a transition (admin configuration UI).
+   * GET /api/admin/workflow/transitions/{transitionId}/conditions
+   */
+  getTransitionConditions(transitionId: number): Observable<ApiResponse<WorkflowCondition[]>> {
+    return this.http.get<ApiResponse<WorkflowCondition[]>>(
+      `${this.apiUrl}/transitions/${transitionId}/conditions`,
       { headers: this.getHeaders() }
     );
   }
