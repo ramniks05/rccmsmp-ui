@@ -11,7 +11,7 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const hiddenRoutes = ['/admin', '/error'];
+        const hiddenRoutes = ['/home/index', '/error'];
         this.showHeader = !hiddenRoutes.includes(event.urlAfterRedirects);
         console.log(this.showHeader);
 
