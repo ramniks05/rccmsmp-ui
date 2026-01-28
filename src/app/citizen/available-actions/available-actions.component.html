@@ -1,0 +1,52 @@
+<div class="available-actions" *ngIf="caseId">
+  <h3 class="section-title">
+    <mat-icon>play_circle</mat-icon>
+    Available actions
+  </h3>
+
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner diameter="32"></mat-spinner>
+    <span>Loading actions…</span>
+  </div>
+
+  <div *ngIf="loadError && !isLoading" class="error">
+    <mat-icon color="warn">error</mat-icon>
+    <span>{{ loadError }}</span>
+  </div>
+
+  <div *ngIf="!isLoading && !loadError && transitions.length === 0" class="empty">
+    <mat-icon>inbox</mat-icon>
+    <p>No actions available for this case.</p>
+  </div>
+
+  <div *ngIf="!isLoading && !loadError && transitions.length > 0" class="actions-list">
+    <div
+      *ngFor="let t of transitions"
+      class="action-item"
+      [class.disabled]="!t.canExecute"
+      [matTooltip]="tooltipText(t)"
+      matTooltipPosition="above"
+    >
+      <span class="icon" [class.passed]="t.canExecute" [class.failed]="!t.canExecute">
+        <mat-icon>{{ t.canExecute ? 'check_circle' : 'cancel' }}</mat-icon>
+      </span>
+      <div class="body">
+        <span class="name">{{ t.transitionName }}</span>
+        <div *ngIf="!t.canExecute && blockingReasons(t).length" class="blocking">
+          <span class="blocking-label">Missing requirements:</span>
+          <ul>
+            <li *ngFor="let r of blockingReasons(t)">{{ r }}</li>
+          </ul>
+        </div>
+      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!t.canExecute"
+        class="execute-btn"
+      >
+        Execute
+      </button>
+    </div>
+  </div>
+</div>

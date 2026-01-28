@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>
+  <mat-icon>rule</mat-icon>
+  Configure Conditions: {{ data.transition.transitionCode }}
+</h2>
+
+<mat-dialog-content>
+  <p class="transition-info" *ngIf="data.transition">
+    <strong>{{ data.transition.transitionName }}</strong>
+    <span *ngIf="data.fromStateName && data.toStateName">
+      — From: {{ data.fromStateName }} → To: {{ data.toStateName }}
+    </span>
+  </p>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading conditions...</p>
+  </div>
+
+  <div *ngIf="!isLoading && conditions.length === 0" class="no-data">
+    <mat-icon>inbox</mat-icon>
+    <p>No conditions configured. Edit a permission for this transition to add conditions.</p>
+  </div>
+
+  <div *ngIf="!isLoading && conditions.length > 0" class="conditions-list">
+    <h4>Configured conditions</h4>
+    <ul>
+      <li *ngFor="let c of conditions" class="condition-item" [class.inactive]="c.isActive === false">
+        <mat-icon *ngIf="c.isActive !== false" color="primary">check_circle</mat-icon>
+        <mat-icon *ngIf="c.isActive === false" color="warn">cancel</mat-icon>
+        <span class="label">{{ formatCondition(c) }}</span>
+        <span class="meta">({{ c.roleCode }})</span>
+      </li>
+    </ul>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onClose()">Close</button>
+</mat-dialog-actions>

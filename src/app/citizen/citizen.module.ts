@@ -13,6 +13,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -31,6 +33,7 @@ import { MyCasesComponent } from './my-cases/my-cases.component';
 import { CaseDetailsComponent } from './case-details/case-details.component';
 import { CaseResubmitComponent } from './case-resubmit/case-resubmit.component';
 import { DynamicStepperFormComponent } from './dynamic-stepper-form/dynamic-stepper-form.component';
+import { AvailableActionsComponent } from './available-actions/available-actions.component';
 
 /**
  * Routes for Citizen Module
@@ -106,6 +109,7 @@ const routes: Routes = [
     CaseDetailsComponent,
     CaseResubmitComponent,
     DynamicStepperFormComponent,
+    AvailableActionsComponent,
   ],
   imports: [
     CommonModule,
@@ -122,6 +126,8 @@ const routes: Routes = [
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,

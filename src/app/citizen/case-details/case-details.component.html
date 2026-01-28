@@ -65,6 +65,9 @@
         </mat-card-content>
       </mat-card>
 
+      <!-- Available Actions (workflow transitions + checklist) -->
+      <app-available-actions *ngIf="caseId" [caseId]="caseId"></app-available-actions>
+
       <!-- Return for Correction Notice -->
       <mat-card *ngIf="canResubmit() && returnComment" class="warning-card">
         <mat-card-header>

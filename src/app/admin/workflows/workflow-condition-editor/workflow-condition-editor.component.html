@@ -1,0 +1,75 @@
+<div class="condition-editor">
+  <section class="condition-section">
+    <h4 class="section-title">
+      <mat-icon>assignment</mat-icon>
+      Module forms
+    </h4>
+    <div class="checkbox-list">
+      <label *ngFor="let flag of formFlags" class="checkbox-item">
+        <mat-checkbox
+          [checked]="isFormFlagChecked(flag.value)"
+          (change)="onFormFlagChange(flag.value, $event.checked)"
+        >
+          {{ flag.label }}
+        </mat-checkbox>
+      </label>
+    </div>
+  </section>
+
+  <section class="condition-section">
+    <h4 class="section-title">
+      <mat-icon>description</mat-icon>
+      Documents
+    </h4>
+    <div class="checkbox-list">
+      <label *ngFor="let flag of docFlags" class="checkbox-item">
+        <mat-checkbox
+          [checked]="isDocFlagChecked(flag.value)"
+          (change)="onDocFlagChange(flag.value, $event.checked)"
+        >
+          {{ flag.label }}
+        </mat-checkbox>
+      </label>
+    </div>
+  </section>
+
+  <section class="condition-section">
+    <h4 class="section-title">
+      <mat-icon>edit_note</mat-icon>
+      Form fields
+    </h4>
+    <div class="form-fields-list">
+      <div *ngFor="let row of formFields; let i = index" class="form-field-row">
+        <mat-form-field appearance="outline" class="field-module">
+          <mat-label>Module</mat-label>
+          <mat-select
+            [value]="row.moduleType"
+            (selectionChange)="onFormFieldModuleChange(i, $event.value)"
+          >
+            <mat-option *ngFor="let m of moduleTypes" [value]="m.value">
+              {{ m.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="field-name">
+          <mat-label>Field</mat-label>
+          <mat-select
+            [value]="row.fieldName"
+            (selectionChange)="onFormFieldNameChange(i, $event.value)"
+          >
+            <mat-option *ngFor="let opt of getFieldOptions(row.moduleType)" [value]="opt.value">
+              {{ opt.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-icon-button color="warn" type="button" (click)="removeFormField(i)" matTooltip="Remove">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+      <button mat-stroked-button color="primary" type="button" (click)="addFormField()">
+        <mat-icon>add</mat-icon>
+        Add field
+      </button>
+    </div>
+  </section>
+</div>

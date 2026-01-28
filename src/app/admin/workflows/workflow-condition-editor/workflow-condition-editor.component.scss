@@ -1,0 +1,85 @@
+.condition-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.condition-section {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #667eea;
+  }
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  mat-checkbox {
+    margin-right: 8px;
+  }
+}
+
+.form-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  .field-module {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .field-name {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  button[mat-icon-button] {
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-field-row {
+    flex-direction: column;
+
+    .field-module,
+    .field-name {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+}

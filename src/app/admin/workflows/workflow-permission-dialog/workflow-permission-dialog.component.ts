@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WorkflowConfigService, WorkflowPermission } from '../../services/workflow-config.service';
+import type { ConditionsPayload } from '../../../core/models/workflow-condition.types';
 
 @Component({
   selector: 'app-workflow-permission-dialog',
@@ -12,6 +13,8 @@ import { WorkflowConfigService, WorkflowPermission } from '../../services/workfl
 export class WorkflowPermissionDialogComponent implements OnInit {
   permissionForm: FormGroup;
   isSubmitting = false;
+  /** Latest conditions from workflow condition editor. */
+  currentConditions: ConditionsPayload = {};
 
   unitLevels = ['STATE', 'DISTRICT', 'SUB_DIVISION', 'CIRCLE'];
   hierarchyRules = ['SAME_UNIT', 'PARENT_UNIT', 'ANY_UNIT', 'SUPERVISOR'];
@@ -31,11 +34,10 @@ export class WorkflowPermissionDialogComponent implements OnInit {
     this.permissionForm = this.fb.group({
       roleCode: ['', Validators.required],
       unitLevel: [null],
-      canInitiate: [null],
-      canApprove: [null],
+      canInitiate: [false],
+      canApprove: [false],
       hierarchyRule: [''],
-      conditions: [''],
-      isActive: [null]
+      isActive: [true]
     });
   }
 
@@ -44,13 +46,16 @@ export class WorkflowPermissionDialogComponent implements OnInit {
       this.permissionForm.patchValue({
         roleCode: this.data.permission.roleCode,
         unitLevel: this.data.permission.unitLevel || null,
-        canInitiate: this.data.permission.canInitiate ?? null,
-        canApprove: this.data.permission.canApprove ?? null,
+        canInitiate: this.data.permission.canInitiate ?? false,
+        canApprove: this.data.permission.canApprove ?? false,
         hierarchyRule: this.data.permission.hierarchyRule || '',
-        conditions: this.data.permission.conditions || '',
-        isActive: this.data.permission.isActive ?? null
+        isActive: this.data.permission.isActive !== false
       });
     }
+  }
+
+  onConditionsChange(payload: ConditionsPayload): void {
+    this.currentConditions = payload;
   }
 
   onSubmit(): void {
@@ -60,14 +65,18 @@ export class WorkflowPermissionDialogComponent implements OnInit {
 
     this.isSubmitting = true;
     const formValue = this.permissionForm.value;
+    const conditionsJson =
+      Object.keys(this.currentConditions).length > 0
+        ? JSON.stringify(this.currentConditions)
+        : undefined;
     const permission: WorkflowPermission = {
       roleCode: formValue.roleCode,
       unitLevel: formValue.unitLevel || null,
-      canInitiate: formValue.canInitiate ?? undefined,
-      canApprove: formValue.canApprove ?? undefined,
+      canInitiate: formValue.canInitiate,
+      canApprove: formValue.canApprove,
       hierarchyRule: formValue.hierarchyRule || undefined,
-      conditions: formValue.conditions || undefined,
-      isActive: formValue.isActive ?? undefined
+      conditions: conditionsJson,
+      isActive: formValue.isActive
     };
 
     if (this.data.mode === 'create') {
