@@ -105,10 +105,22 @@
   .sw-logo {
     max-height: 55px;
   }
+  .header-center {
+    display: none;
+  }
+}
+
+@media (max-width: 1300px) {
+  .header-center {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
   .username {
+    display: none;
+  }
+  .header-center {
     display: none;
   }
 }
@@ -117,4 +129,9 @@
   letter-spacing: 2px;
   word-spacing: 4px;
   margin-top: 1%;
+}
+
+img.di-logo {
+  height: 62px;
+  margin: 0 101px;
 }

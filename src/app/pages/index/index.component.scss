@@ -77,24 +77,28 @@
 .auth-buttons {
   display: flex;
   gap: 8px;
-}
 
-.login-btn {
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-weight: 600;
-}
+  button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-.register-btn {
-  background: #fff;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-weight: 600;
+  .login-btn {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+  }
+
+  .register-btn {
+    background: #ffffff;
+    color: var(--primary-color);
+    border: 1px solid #0b5ed7;
+  }
 }
 
 /* ================= MAIN NAV ================= */
@@ -410,6 +414,14 @@
   .actions {
     align-items: center;
   }
+
+  .sidebar {
+    display: none;
+  }
+
+  .portal-logo {
+    display: none;
+  }
 }
 
 /* ================= WHAT'S NEW SECTION ================= */
@@ -615,4 +627,9 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+img.digital-logo {
+  height: 60px !important;
+  margin-left: 140px;
 }
