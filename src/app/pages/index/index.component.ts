@@ -72,10 +72,10 @@ export class IndexComponent implements OnInit {
   }
 
   goToLogin() {
-    this.router.navigate(["home/login"])
+    this.router.navigate(["home/login"]);
   }
 
   goToRegistration() {
-    this.router.navigate(["registration"])
+    this.router.navigate(["registration"]);
   }
 }

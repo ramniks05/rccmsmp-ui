@@ -11,7 +11,7 @@ export const HOME_DATA: HomeData = {
     secondaryColor: '#f58220',
     helpline: '1800-XXX-XXXX',
     email: 'help@manipur.gov.in',
-    logoUrl: 'assets/Manipur-Government.png'
+    logoUrl: 'assets/manipur-gov-logo-main.png'
   },
 
   // ================= BANNERS =================
