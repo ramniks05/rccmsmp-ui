@@ -201,7 +201,7 @@ export const HOME_DATA: HomeData = {
     'Process automation for mutation cases'
   ],
 
-  marqueeText : [
-    'Online services available | Apply digitally | Transparent governance'
+  marqueeText: [
+    '🎯 Welcome to RCCMS Manipur | 📱 Track cases online 24/7 | 🔒 Secure digital platform | 📊 Real-time case updates | 💼 All 3073 courts connected | 📞 Helpline: 1800-180-6025'
   ]
 };
