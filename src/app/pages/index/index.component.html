@@ -122,16 +122,14 @@
   </div>
 </nav>
 
-<!-- ===== NEXT SECTION : Sidebar + Content (Below Banner) ===== -->
+<!-- ===== Sidebar + Content (Below Banner) ===== -->
 <section class="container-services sidebarMenu__outer next-section">
   <div class="row">
-    <!-- LEFT : SAME SIDEBAR -->
-    <!-- LEFT : SIDEBAR -->
     <div class="col-12 col-lg-3 p-0 pl-lg-3 pr-lg-0 sidebar-col">
       <aside class="sidebar">
         <ul class="menu">
           <li *ngFor="let item of menu" class="menu-item">
-            <a href="javascript:void(0)">
+            <a [href]=item.route>
               <mat-icon>{{ item.icon }}</mat-icon>
               <span>{{ item.label }}</span>
               <mat-icon *ngIf="item.children" class="arrow">

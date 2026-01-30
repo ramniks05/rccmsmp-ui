@@ -74,19 +74,21 @@ export const HOME_DATA: HomeData = {
 
   // ================= MENU =================
   menu: [
-    { label: 'Dashboard', icon: 'dashboard' },
+    { label: 'Dashboard', icon: 'dashboard', route: 'home/dashboard' },
     {
       label: 'Services',
       icon: 'miscellaneous_services',
+      route: 'home/dashboard',
       children: ['Land Records', 'Mutation', 'Revenue Courts', 'Certificates']
     },
     {
       label: 'Applications',
       icon: 'assignment',
+      route: 'home/dashboard',
       children: ['Apply Online', 'Track Status', 'Pending Applications']
     },
-    { label: 'Circulars', icon: 'description' },
-    { label: 'Help & Support', icon: 'support_agent' }
+    { label: 'Circulars', route: 'home/dashboard', icon: 'description' },
+    { label: 'Help & Support', icon: 'support_agent', route: 'home/dashboard', }
   ],
 
   // ================= SERVICES (CARDS / ACCORDION) =================

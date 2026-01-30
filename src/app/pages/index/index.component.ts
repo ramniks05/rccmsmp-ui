@@ -9,15 +9,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
-  // ================= DATA =================
   data: HomeData = HOME_DATA;
-
   banners = this.data.banners ?? [];
   highlights = this.data.highlights ?? [];
   services: Service[] = this.data.services ?? [];
   menu = this.data.menu ?? [];
   marqueeText = this.data.marqueeText ?? '';
-
   animatedStatistics: number[] = [];
   activeBanner = 0;
 
@@ -29,7 +26,6 @@ export class IndexComponent implements OnInit {
     this.animateStatistics();
   }
 
-  // ================= UI HELPERS =================
   toggle(index: number): void {
     this.services = this.services.map((service, i) => ({
       ...service,
@@ -37,7 +33,6 @@ export class IndexComponent implements OnInit {
     }));
   }
 
-  // ================= PRIVATE METHODS =================
   private startBannerRotation(): void {
     if (!this.banners.length) return;
 
