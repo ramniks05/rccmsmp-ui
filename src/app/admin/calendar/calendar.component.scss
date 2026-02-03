@@ -1,0 +1,206 @@
+/* Calendar Grid Styles */
+.calendar-grid {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.week-day {
+  padding: 15px;
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border-right: 1px solid #e9ecef;
+}
+
+.week-day:last-child {
+  border-right: none;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+}
+
+.calendar-day {
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  background: #fff;
+}
+
+.calendar-day:hover {
+  background: #f8f9fa;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.calendar-day.other-month {
+  background: #f8f9fa;
+  color: #adb5bd;
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  background: #f8f9fa;
+  transform: none;
+  box-shadow: none;
+}
+
+.calendar-day.today {
+  background: #e7f3ff;
+  border: 2px solid #0d6efd;
+}
+
+.calendar-day.today:hover {
+  background: #d4e9ff;
+}
+
+.day-number {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.calendar-day.today .day-number {
+  color: #0d6efd;
+  font-weight: 700;
+}
+
+/* Event Indicators */
+.event-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.event-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.event-dot-event {
+  background: #0dcaf0;
+}
+
+.event-dot-holiday {
+  background: #dc3545;
+}
+
+/* Upcoming Events List */
+.upcoming-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.upcoming-item {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+  transition: background 0.2s ease;
+}
+
+.upcoming-item:hover {
+  background: #f8f9fa;
+}
+
+.upcoming-item:last-child {
+  border-bottom: none;
+}
+
+.holiday-item {
+  border-left: 4px solid #dc3545;
+}
+
+.event-item {
+  border-left: 4px solid #0dcaf0;
+}
+
+/* Modal Styles */
+.modal.show {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+/* Legend Styles */
+.today-indicator {
+  width: 20px;
+  height: 20px;
+  background: #e7f3ff;
+  border: 2px solid #0d6efd;
+  border-radius: 4px;
+}
+
+/* Scrollbar Styling */
+.upcoming-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.upcoming-list::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+.upcoming-list::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 4px;
+}
+
+.upcoming-list::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .calendar-day {
+    min-height: 80px;
+    padding: 8px;
+  }
+
+  .day-number {
+    font-size: 14px;
+  }
+
+  .week-day {
+    padding: 10px 5px;
+    font-size: 14px;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Card Styles Enhancement */
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+  padding: 20px;
+}
+
+/* Button Styles */
+.btn-sm {
+  font-size: 14px;
+  padding: 6px 12px;
+}
