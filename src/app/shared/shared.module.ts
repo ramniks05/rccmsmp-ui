@@ -19,18 +19,25 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
-// import { ViewDialogComponent } from './components/view-dialog/view-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-// import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSortModule } from '@angular/material/sort';
 
-// Shared Components
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
+import { NgChartsModule } from 'ng2-charts';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 /**
  * Shared Module
@@ -42,7 +49,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     FooterComponent,
     MaskEmailPipe,
     BreadcrumbsComponent,
-    JsonParsePipe
+    JsonParsePipe,
   ],
   imports: [
     ReactiveFormsModule,
@@ -53,7 +60,6 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatIconModule,
     MatButtonModule,
     MatExpansionModule,
-    MatCardModule,
     MatCardModule,
     MatSelectModule,
     MatMenuModule,
@@ -67,13 +73,35 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatStepperModule,
     MatDialogModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+    MatSortModule,
+    NgChartsModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   exports: [
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
+
+    // Components & Pipes
     HeaderComponent,
     FooterComponent,
+    BreadcrumbsComponent,
+    MaskEmailPipe,
+    JsonParsePipe,
+
+    // Angular / Router
+    RouterModule,
+
+    // Angular Material
+    MatToolbarModule,
     MatExpansionModule,
     MatCardModule,
     MatIconModule,
@@ -91,10 +119,20 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatDialogModule,
     MatPaginatorModule,
     MatTableModule,
-    MaskEmailPipe,
-    BreadcrumbsComponent,
-    JsonParsePipe
-  ]
-})
-export class SharedModule { }
+    MatProgressBarModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+    MatSortModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatTabsModule,
 
+    // Charts
+    NgChartsModule,
+  ],
+})
+export class SharedModule {}

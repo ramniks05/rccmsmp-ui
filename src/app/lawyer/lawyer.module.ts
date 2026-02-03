@@ -1,19 +1,11 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
-// Angular Material Modules
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 // Guards
 import { AuthGuard } from '../core/guards/auth.guard';
 
 // Components
 import { LawyerHomeComponent } from './lawyer-home/lawyer-home.component';
+import { SharedModule } from '../shared/shared.module';
 
 /**
  * Routes for Lawyer Module
@@ -41,14 +33,8 @@ const routes: Routes = [
     LawyerHomeComponent
   ],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule
+    SharedModule,
+    RouterModule.forChild(routes)
   ]
 })
 export class LawyerModule { }
