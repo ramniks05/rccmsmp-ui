@@ -34,6 +34,10 @@ import { FooterComponent } from './components/footer/footer.component';
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
+import { NgChartsModule } from 'ng2-charts';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 /**
  * Shared Module
@@ -45,7 +49,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     FooterComponent,
     MaskEmailPipe,
     BreadcrumbsComponent,
-    JsonParsePipe
+    JsonParsePipe,
   ],
   imports: [
     ReactiveFormsModule,
@@ -79,10 +83,22 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     // NgChartsModule     // ← OPTIONAL: Add if you want to share chart.js across modules
   ],
   exports: [
+    CommonModule,
     ReactiveFormsModule,
     FormsModule,
+
+    // Components & Pipes
     HeaderComponent,
     FooterComponent,
+    BreadcrumbsComponent,
+    MaskEmailPipe,
+    JsonParsePipe,
+
+    // Angular / Router
+    RouterModule,
+
+    // Angular Material
+    MatToolbarModule,
     MatExpansionModule,
     MatCardModule,
     MatIconModule,
