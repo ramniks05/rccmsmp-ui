@@ -19,13 +19,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatStepperModule } from '@angular/material/stepper';
-// import { ViewDialogComponent } from './components/view-dialog/view-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-// import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSortModule } from '@angular/material/sort';
 
-// Shared Components
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
@@ -54,7 +57,6 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatButtonModule,
     MatExpansionModule,
     MatCardModule,
-    MatCardModule,
     MatSelectModule,
     MatMenuModule,
     MatFormFieldModule,
@@ -67,7 +69,14 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatStepperModule,
     MatDialogModule,
     MatPaginatorModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatButtonToggleModule,
+    MatTooltipModule,     // ← ADDED
+    MatSortModule,        // ← ADDED
+    // NgChartsModule     // ← OPTIONAL: Add if you want to share chart.js across modules
   ],
   exports: [
     ReactiveFormsModule,
@@ -93,8 +102,13 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatTableModule,
     MaskEmailPipe,
     BreadcrumbsComponent,
-    JsonParsePipe
+    JsonParsePipe,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+    MatSortModule,
   ]
 })
 export class SharedModule { }
-

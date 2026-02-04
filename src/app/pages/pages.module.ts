@@ -1,3 +1,4 @@
+import { IndexComponent } from './index/index.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -19,7 +20,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 // Page Components
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { SharedModule } from '../shared/shared.module';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { NgChartsModule } from 'ng2-charts';
 
 /**
  * Routes for Pages Module
@@ -35,6 +39,16 @@ const routes: Routes = [
     path: 'login',
     component: LoginPageComponent,
     data: { breadcrumb: 'Login' }
+  },
+  {
+    path: 'index',
+    component: IndexComponent,
+    data: { breadcrumb: 'Index' }
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    data: { breadcrumb: 'Dashboard' }
   }
 ];
 
@@ -46,7 +60,9 @@ const routes: Routes = [
   declarations: [
     HomeComponent,
     LoginComponent,
-    LoginPageComponent
+    IndexComponent,
+    LoginPageComponent,
+    DashboardComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +79,9 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatRadioModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    SharedModule,
+    NgChartsModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'en-IN' }

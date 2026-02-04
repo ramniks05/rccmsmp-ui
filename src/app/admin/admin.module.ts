@@ -56,6 +56,7 @@ import { RegistrationFormGroupsComponent } from './registration-forms/registrati
 import { RegistrationFormGroupDialogComponent } from './registration-forms/registration-form-groups/registration-form-group-dialog/registration-form-group-dialog.component';
 import { ModuleFormsComponent } from './module-forms/module-forms.component';
 import { DocumentTemplatesComponent } from './document-templates/document-templates.component';
+import { CalendarComponent } from './calendar/calendar.component';
 
 /**
  * Routes for Admin Module
@@ -160,6 +161,12 @@ const routes: Routes = [
     component: DocumentTemplatesComponent,
     canActivate: [AdminGuard],
     data: { breadcrumb: 'Document Templates' }
+  },
+  {
+    path: 'calendar',
+    component: CalendarComponent,
+    canActivate: [AdminGuard],
+    data: { breadcrumb: 'Calendar' }
   }
 ];
 
@@ -205,7 +212,8 @@ const routes: Routes = [
     RegistrationFormGroupsComponent,
     RegistrationFormGroupDialogComponent,
     ModuleFormsComponent,
-    DocumentTemplatesComponent
+    DocumentTemplatesComponent,
+    CalendarComponent
   ],
   imports: [
     CommonModule,
