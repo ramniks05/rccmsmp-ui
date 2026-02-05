@@ -1,0 +1,103 @@
+// ========== VARIABLES ==========
+$primary-color: #667eea;
+$success-color: #11998e;
+$warning-color: #f5576c;
+$info-color: #4facfe;
+$sidebar-bg: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+$card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+$card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// ========== LAYOUT ==========
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+  font-family: "Roboto", "Segoe UI", sans-serif;
+}
+
+// ========== SIDEBAR ==========
+.sidebar {
+  width: 260px;
+  background: $sidebar-bg;
+  color: #fff;
+  padding: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .logo-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+      color: #4facfe;
+    }
+
+    .sidebar-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+  }
+
+  nav {
+    padding: 20px 12px;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: $transition;
+      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+
+      mat-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+
+      span {
+        font-size: 15px;
+        font-weight: 500;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: translateX(5px);
+      }
+
+      &.active {
+        background: linear-gradient(135deg, $primary-color 0%, #764ba2 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+
+        &:hover {
+          transform: translateX(0);
+        }
+      }
+    }
+  }
+}
+// ========== MAIN CONTENT ==========
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}

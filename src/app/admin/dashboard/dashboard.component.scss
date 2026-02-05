@@ -94,16 +94,6 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
-// ========== MAIN CONTENT ==========
-.content {
-  flex: 1;
-  padding: 32px 40px;
-  overflow-y: auto;
-  max-width: 1600px;
-  margin: 0 auto;
-  width: 100%;
-}
-
 // ========== HEADER ==========
 .page-header {
   display: flex;
@@ -554,4 +544,8 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   50% {
     transform: scale(1.05);
   }
+}
+
+.content {
+  padding: 32px 40px;
 }

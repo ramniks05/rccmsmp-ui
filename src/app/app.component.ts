@@ -14,7 +14,7 @@ export class AppComponent {
       if (event instanceof NavigationEnd) {
         const hiddenRoutes = ['/home', '/error'];
         this.showHeader = !hiddenRoutes.includes(event.urlAfterRedirects);
-        const hiddenBreadRoutes = ['/home', '/home/dashboard'];
+        const hiddenBreadRoutes = ['/home', '/admin/home'];
         this.showBreadCrumbs = !hiddenBreadRoutes.includes(event.urlAfterRedirects);
       }
     });

@@ -26,18 +26,27 @@ export class BreadcrumbService {
   ): Breadcrumb[] {
     const children = route.children;
 
-    if (children.length === 0) {
+    if (!children || children.length === 0) {
       return breadcrumbs;
     }
 
     for (const child of children) {
-      const routeURL = child.snapshot.url.map(s => s.path).join('/');
-      if (routeURL !== '') {
+      const routeURL = child.snapshot.url
+        .map(segment => segment.path)
+        .join('/');
+
+      // build URL only if path exists
+      if (routeURL) {
         url += `/${routeURL}`;
       }
 
       const label = child.snapshot.data['breadcrumb'];
-      if (label) {
+
+      if (
+        label &&
+        (breadcrumbs.length === 0 ||
+          breadcrumbs[breadcrumbs.length - 1].label !== label)
+      ) {
         breadcrumbs.push({ label, url });
       }
 

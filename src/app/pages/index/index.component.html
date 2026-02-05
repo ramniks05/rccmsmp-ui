@@ -117,7 +117,7 @@
     <!-- NOTICE MARQUEE -->
     <div class="notice-marquee">
       <mat-icon>campaign</mat-icon>
-      <marquee>{{ marqueeText }}</marquee>
+      <marquee>{{ settings!.marqueeText }}</marquee>
     </div>
   </div>
 </nav>
@@ -156,13 +156,13 @@
       <section class="top-banner">
         <div
           class="banner-slide"
-          *ngFor="let banner of banners; let i = index"
+          *ngFor="let banner of settings!.banners; let i = index"
           [class.active]="i === activeBanner"
         >
-          <img [src]="banner.imageUrl" alt="Banner" />
+          <img [src]="banner.url" alt="Banner" />
           <div class="banner-overlay">
-            <h2>{{ banner.title }}</h2>
-            <p>{{ banner.subtitle }}</p>
+            <h2>{{ banner.header }}</h2>
+            <p>{{ banner.subHeader }} || </p>
           </div>
         </div>
       </section>

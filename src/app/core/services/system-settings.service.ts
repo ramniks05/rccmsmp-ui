@@ -16,6 +16,14 @@ export interface SystemSettings {
   footerEmail: string | null;
   footerPhone: string | null;
   footerWebsite: string | null;
+  secondaryLogoUrl: string | null;
+  secondaryLogoHeader: string | null;
+  secondaryLogoSubheader: string | null;
+  tertiaryLogoUrl: string | null;
+  tertiaryLogoHeader: string | null;
+  tertiaryLogoSubheader: string | null;
+  marqueeText: string | null;
+  banners: any
 }
 
 interface ApiResponse<T> {

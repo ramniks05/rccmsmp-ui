@@ -58,7 +58,7 @@ export class LoginComponent {
   ) {
     // Mobile Login Form with OTP and CAPTCHA
     this.mobileLoginForm = this.fb.group({
-      mobile: ['9538532764', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       otp: [''],
       captcha: ['', [Validators.required]],
     });

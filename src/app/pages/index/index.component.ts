@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HomeData, Service } from 'src/assets/home-model';
 import { HOME_DATA } from '../../../assets/mock-home-data';
 import { Router } from '@angular/router';
+import {
+  SystemSettings,
+  SystemSettingsService,
+} from 'src/app/core/services/system-settings.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -9,6 +14,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
+  settings$: Observable<SystemSettings | null>;
+  settings: SystemSettings | null = null;
+  private subscription?: Subscription;
   data: HomeData = HOME_DATA;
   banners = this.data.banners ?? [];
   highlights = this.data.highlights ?? [];
@@ -18,12 +26,20 @@ export class IndexComponent implements OnInit {
   animatedStatistics: number[] = [];
   activeBanner = 0;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private settingsService: SystemSettingsService,
+  ) {
+    this.settings$ = this.settingsService.getSettings();
+  }
 
   ngOnInit(): void {
     this.setThemeColor();
     this.startBannerRotation();
     this.animateStatistics();
+    this.subscription = this.settings$.subscribe((settings) => {
+      this.settings = settings;
+    });
   }
 
   toggle(index: number): void {
@@ -67,10 +83,10 @@ export class IndexComponent implements OnInit {
   }
 
   goToLogin() {
-    this.router.navigate(["home/login"]);
+    this.router.navigate(['home/login']);
   }
 
   goToRegistration() {
-    this.router.navigate(["registration"]);
+    this.router.navigate(['registration']);
   }
 }

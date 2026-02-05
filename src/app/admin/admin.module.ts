@@ -32,8 +32,9 @@ import { RegistrationFormGroupDialogComponent } from './registration-forms/regis
 import { ModuleFormsComponent } from './module-forms/module-forms.component';
 import { DocumentTemplatesComponent } from './document-templates/document-templates.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { SharedModule } from '../shared/shared.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { SharedModule } from '../shared/shared.module';
+import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 
 /**
  * Routes for Admin Module
@@ -44,112 +45,113 @@ const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
+
+  // LOGIN (NO SIDEBAR)
   {
     path: 'login',
     component: AdminLoginComponent,
     data: { breadcrumb: 'Login' }
   },
+
+  // ADMIN LAYOUT (WITH SIDEBAR)
   {
-    path: 'home',
-    component: DashboardComponent,
+    path: '',
+    component: AdminLayoutComponent,
     canActivate: [AdminGuard],
-    data: { breadcrumb: 'Dashboard' }
-  },
-  {
-    path: 'features',
-    component: AdminHomeComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Features' }
-  },
-  {
-    path: 'administrative-units',
-    component: AdministrativeUnitsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Administrative Units' }
-  },
-  {
-    path: 'officers',
-    component: OfficersComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Officers' }
-  },
-  {
-    path: 'postings',
-    component: PostingsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Postings' }
-  },
-  {
-    path: 'case-types',
-    component: CaseTypesComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Case Types' }
-  },
-  {
-    path: 'acts',
-    component: ActsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Acts' }
-  },
-  {
-    path: 'case-natures',
-    component: CaseNaturesComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Case Natures' }
-  },
-  {
-    path: 'courts',
-    component: CourtsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Courts' }
-  },
-  {
-    path: 'form-schema-builder/:caseTypeId',
-    component: FormSchemaBuilderComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Form Schema Builder' }
-  },
-  {
-    path: 'system-settings',
-    component: SystemSettingsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'System Settings' }
-  },
-  {
-    path: 'workflows',
-    component: WorkflowListComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Workflows' }
-  },
-  {
-    path: 'workflows/:id',
-    component: WorkflowBuilderComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Workflow Builder' }
-  },
-  {
-    path: 'registration-forms',
-    component: RegistrationFormsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Registration Forms' }
-  },
-  {
-    path: 'module-forms',
-    component: ModuleFormsComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Module Forms Configuration' }
-  },
-  {
-    path: 'document-templates',
-    component: DocumentTemplatesComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Document Templates' }
-  },
-  {
-    path: 'calendar',
-    component: CalendarComponent,
-    canActivate: [AdminGuard],
-    data: { breadcrumb: 'Calendar' }
+    children: [
+      {
+        path: 'home',
+        component: DashboardComponent,
+        data: { breadcrumb: 'Dashboard' }
+      },
+      {
+        path: 'features',
+        component: AdminHomeComponent,
+        data: { breadcrumb: 'Features' }
+      },
+      {
+        path: 'administrative-units',
+        component: AdministrativeUnitsComponent,
+        data: { breadcrumb: 'Administrative Units' }
+      },
+      {
+        path: 'officers',
+        component: OfficersComponent,
+        data: { breadcrumb: 'Officers' }
+      },
+      {
+        path: 'postings',
+        component: PostingsComponent,
+        data: { breadcrumb: 'Postings' }
+      },
+      {
+        path: 'case-types',
+        component: CaseTypesComponent,
+        data: { breadcrumb: 'Case Types' }
+      },
+      {
+        path: 'acts',
+        component: ActsComponent,
+        data: { breadcrumb: 'Acts' }
+      },
+      {
+        path: 'case-natures',
+        component: CaseNaturesComponent,
+        data: { breadcrumb: 'Case Natures' }
+      },
+      {
+        path: 'courts',
+        component: CourtsComponent,
+        data: { breadcrumb: 'Courts' }
+      },
+      {
+        path: 'form-schema-builder/:caseTypeId',
+        component: FormSchemaBuilderComponent,
+        data: { breadcrumb: 'Form Schema Builder' }
+      },
+      {
+        path: 'system-settings',
+        component: SystemSettingsComponent,
+        data: { breadcrumb: 'System Settings' }
+      },
+      {
+        path: 'workflows',
+        component: WorkflowListComponent,
+        data: { breadcrumb: 'Workflows' }
+      },
+      {
+        path: 'workflows/:id',
+        component: WorkflowBuilderComponent,
+        data: { breadcrumb: 'Workflow Builder' }
+      },
+      {
+        path: 'registration-forms',
+        component: RegistrationFormsComponent,
+        data: { breadcrumb: 'Registration Forms' }
+      },
+      {
+        path: 'module-forms',
+        component: ModuleFormsComponent,
+        data: { breadcrumb: 'Module Forms Configuration' }
+      },
+      {
+        path: 'document-templates',
+        component: DocumentTemplatesComponent,
+        data: { breadcrumb: 'Document Templates' }
+      },
+      {
+        path: 'calendar',
+        component: CalendarComponent,
+        data: { breadcrumb: 'Calendar' }
+      },
+
+      // default after login
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+    ]
   }
 ];
 
@@ -197,7 +199,8 @@ const routes: Routes = [
     ModuleFormsComponent,
     DocumentTemplatesComponent,
     CalendarComponent,
-    DashboardComponent
+    DashboardComponent,
+    AdminLayoutComponent
   ],
   imports: [
     SharedModule,

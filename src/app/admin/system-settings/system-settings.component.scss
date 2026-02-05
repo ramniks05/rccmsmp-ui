@@ -27,14 +27,14 @@
     background-color: #f5f5f5;
     padding: 1rem;
     margin: -16px -16px 1rem -16px;
-    
+
     mat-card-title {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-size: 1.25rem;
       font-weight: 600;
-      
+
       mat-icon {
         color: var(--primary-color, #1976d2);
       }
@@ -86,10 +86,18 @@
 
   .action-buttons {
     flex-direction: column;
-    
+
     button {
       width: 100%;
     }
   }
 }
 
+.sixty-width {
+  width: 60%;
+  margin-right: 4%;
+}
+
+.thirty-width {
+  width: 30%;
+}

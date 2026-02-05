@@ -15,7 +15,6 @@ import { SharedModule } from './shared/shared.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-
     // Application Modules
     CoreModule,
     SharedModule
