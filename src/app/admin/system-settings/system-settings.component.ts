@@ -70,7 +70,8 @@ export class SystemSettingsComponent implements OnInit {
   private createBannerGroup(data?: any): FormGroup {
     return this.fb.group({
       url: [data?.url || '', Validators.required],
-      header: [data?.header || '', Validators.required]
+      header: [data?.header || '', Validators.required],
+      subHeader: [data?.subHeader || '']
     });
   }
 

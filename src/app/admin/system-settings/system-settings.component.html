@@ -216,7 +216,7 @@
               [formGroupName]="i"
             >
               <!-- Banner Image URL -->
-              <mat-form-field appearance="outline" class="sixty-width mr-4">
+              <mat-form-field appearance="outline" class="forty-width mr-4">
                 <mat-label>Banner Image URL {{ i + 1 }}</mat-label>
                 <input
                   matInput
@@ -226,12 +226,22 @@
               </mat-form-field>
 
               <!-- Banner Header -->
-              <mat-form-field appearance="outline" class="thirty-width">
+              <mat-form-field appearance="outline" class="twenty-width mr-4">
                 <mat-label>Banner Header</mat-label>
                 <input
                   matInput
                   formControlName="header"
                   placeholder="Banner heading text"
+                />
+              </mat-form-field>
+
+              <!-- Banner Sub Header -->
+              <mat-form-field appearance="outline" class="twenty-width">
+                <mat-label>Banner Sub Header</mat-label>
+                <input
+                  matInput
+                  formControlName="subHeader"
+                  placeholder="Banner sub heading text"
                 />
               </mat-form-field>
 
