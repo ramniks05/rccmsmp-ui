@@ -12,9 +12,9 @@ export class AppComponent {
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const hiddenRoutes = ['/home/index', '/error'];
+        const hiddenRoutes = ['/home', '/error'];
         this.showHeader = !hiddenRoutes.includes(event.urlAfterRedirects);
-        const hiddenBreadRoutes = ['/home/index', '/home/dashboard'];
+        const hiddenBreadRoutes = ['/home', '/home/dashboard'];
         this.showBreadCrumbs = !hiddenBreadRoutes.includes(event.urlAfterRedirects);
       }
     });

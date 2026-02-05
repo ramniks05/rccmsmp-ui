@@ -56,17 +56,6 @@ const routes: Routes = [
   ],
   imports: [
     RouterModule.forChild(routes),
-    MatCardModule,
-    MatButtonModule,
-    MatTabsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatRadioModule,
-    MatProgressSpinnerModule,
     SharedModule,
     NgChartsModule
   ],

@@ -16,12 +16,6 @@ import { SharedModule } from './shared/shared.module';
     BrowserAnimationsModule,
     AppRoutingModule,
 
-    // Angular Material
-    MatToolbarModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-
     // Application Modules
     CoreModule,
     SharedModule
