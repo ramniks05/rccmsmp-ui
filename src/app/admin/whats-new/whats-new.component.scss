@@ -1,0 +1,547 @@
+// ========================================
+// FORM SECTION
+// ========================================
+.form-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.form-header-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-icon {
+  color: #fff;
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.form-title {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.form-subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  margin: 4px 0 0 0;
+}
+
+.entry-form {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr 1fr auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.date-field,
+.title-field,
+.pdf-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.save-btn,
+.reset-btn {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.save-btn {
+  min-width: 140px;
+}
+
+.reset-btn {
+  min-width: 100px;
+}
+
+.button-spinner {
+  display: inline-block;
+  margin: 0;
+
+  ::ng-deep circle {
+    stroke: currentColor;
+  }
+}
+
+// ========================================
+// SECTION DIVIDER
+// ========================================
+.section-divider {
+  margin: 32px 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+}
+
+// ========================================
+// TABLE SECTION
+// ========================================
+.table-section {
+  margin-top: 32px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px 0;
+}
+
+.table-header-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  .header-icon {
+    color: var(--primary-color, #667eea);
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.table-title {
+  color: #212121;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.table-subtitle {
+  color: #757575;
+  font-size: 0.875rem;
+  margin: 4px 0 0 0;
+}
+
+.table-stats {
+  ::ng-deep {
+    .mat-mdc-chip {
+      background-color: #f5f5f5;
+      color: #424242;
+      font-weight: 500;
+
+      .mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+.table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+}
+
+// ========================================
+// CUSTOM TABLE STYLING
+// ========================================
+.custom-table {
+  width: 100%;
+  background-color: #fff;
+
+  // Header
+  th.mat-header-cell {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 600;
+    color: #424242;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px;
+  }
+
+  // Body cells
+  td.mat-cell {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px;
+    color: #424242;
+  }
+
+  // Rows
+  tr.mat-row {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    &.editing-row {
+      background-color: #e3f2fd;
+      border-left: 4px solid #2196f3;
+    }
+  }
+}
+
+.header-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+  }
+}
+
+.date-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+
+  .cell-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #757575;
+  }
+}
+
+.title-cell {
+  .title-text {
+    display: block;
+    font-weight: 500;
+    color: #212121;
+    line-height: 1.4;
+  }
+}
+
+.pdf-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.action-buttons-cell {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+
+  button {
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// ========================================
+// EMPTY STATE
+// ========================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #bdbdbd;
+    opacity: 0.5;
+  }
+
+  .empty-state-content {
+    text-align: center;
+
+    h4 {
+      color: #424242;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      color: #757575;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  }
+}
+
+// ========================================
+// PAGINATION
+// ========================================
+.custom-paginator {
+  border-top: 1px solid #e0e0e0;
+  background-color: #fafafa;
+
+  ::ng-deep {
+    .mat-mdc-paginator-container {
+      padding: 12px 16px;
+    }
+
+    .mat-mdc-paginator-page-size-label,
+    .mat-mdc-paginator-range-label {
+      color: #424242;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ========================================
+// FORM FIELD CUSTOMIZATION
+// ========================================
+::ng-deep {
+  .mat-mdc-form-field {
+    &.mat-form-field-appearance-outline {
+      .mat-mdc-text-field-wrapper {
+        padding-bottom: 0;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding: 14px 0;
+      }
+
+      .mat-mdc-form-field-label {
+        top: 22px;
+      }
+
+      .mat-mdc-form-field-icon-prefix {
+        .mat-icon {
+          color: #757575;
+          margin-right: 8px;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+// ========================================
+// SNACKBAR STYLES
+// ========================================
+::ng-deep {
+  .success-snackbar {
+    .mat-mdc-snack-bar-label {
+      background-color: #4caf50;
+      color: white;
+    }
+  }
+
+  .error-snackbar {
+    .mat-mdc-snack-bar-label {
+      background-color: #f44336;
+      color: white;
+    }
+  }
+}
+
+// ========================================
+// RESPONSIVE DESIGN
+// ========================================
+@media (max-width: 1200px) {
+  .form-grid {
+    grid-template-columns: 180px 1fr 1fr auto;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    .date-field {
+      grid-column: 1 / 2;
+    }
+
+    .title-field {
+      grid-column: 2 / 3;
+    }
+
+    .pdf-field {
+      grid-column: 1 / 3;
+    }
+
+    .form-actions {
+      grid-column: 1 / 3;
+      justify-content: flex-end;
+    }
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-section {
+    padding: 16px;
+  }
+
+  .entry-form {
+    padding: 16px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+
+    .date-field,
+    .title-field,
+    .pdf-field,
+    .form-actions {
+      grid-column: 1;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      width: 100%;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .form-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .form-title {
+    font-size: 1.25rem;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .custom-table {
+    min-width: 600px;
+  }
+
+  .table-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-title {
+    font-size: 1.125rem;
+  }
+
+  .table-title {
+    font-size: 1.125rem;
+  }
+
+  .custom-table {
+    th.mat-header-cell,
+    td.mat-cell {
+      padding: 12px 8px;
+      font-size: 0.813rem;
+    }
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
+
+// ========================================
+// PRINT STYLES
+// ========================================
+@media print {
+  .form-section,
+  .form-actions,
+  .action-buttons-cell,
+  .custom-paginator {
+    display: none;
+  }
+
+  .table-wrapper {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+
+  .custom-table {
+    tr.mat-row {
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}

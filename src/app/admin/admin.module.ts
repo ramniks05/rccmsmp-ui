@@ -35,6 +35,9 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
+import { WhatsNewComponent } from './whats-new/whats-new.component';
+import { AdvancedSettingsComponent } from './advanced-settings/advanced-settings.component';
+import { DocumentsAvailableComponent } from './documents-available/documents-available.component';
 
 /**
  * Routes for Admin Module
@@ -113,6 +116,11 @@ const routes: Routes = [
         path: 'system-settings',
         component: SystemSettingsComponent,
         data: { breadcrumb: 'System Settings' }
+      },
+      {
+        path: 'advanced-system-settings',
+        component: AdvancedSettingsComponent,
+        data: { breadcrumb: 'Advanced System Settings' }
       },
       {
         path: 'workflows',
@@ -200,11 +208,17 @@ const routes: Routes = [
     DocumentTemplatesComponent,
     CalendarComponent,
     DashboardComponent,
-    AdminLayoutComponent
+    AdminLayoutComponent,
+    WhatsNewComponent,
+    AdvancedSettingsComponent,
+    DocumentsAvailableComponent
   ],
   imports: [
     SharedModule,
     RouterModule.forChild(routes),
+  ],
+  exports: [
+    CalendarComponent
   ]
 })
 export class AdminModule { }
