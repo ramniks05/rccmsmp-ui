@@ -43,6 +43,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { RichTextEditorComponent } from './components/rich-text-editor/rich-text-editor.component';
+import { DigitalSignatureDialogComponent } from './components/digital-signature-dialog/digital-signature-dialog.component';
 
 // Pipes
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
@@ -60,6 +61,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     BreadcrumbsComponent,
     JsonParsePipe,
     RichTextEditorComponent,
+    DigitalSignatureDialogComponent,
   ],
   imports: [
     CommonModule,

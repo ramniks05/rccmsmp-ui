@@ -1,0 +1,177 @@
+<h2 mat-dialog-title>Digital Signature</h2>
+
+<mat-dialog-content class="signature-dialog-content">
+  
+  <!-- Feature Not Available Warning -->
+  <mat-card *ngIf="certificateStatus === null && !loading" class="warning-card" style="background-color: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 1rem;">
+    <mat-card-content>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <mat-icon style="color: #856404;">info</mat-icon>
+        <span style="color: #856404;">Checking certificate status...</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- Certificate Status -->
+  <mat-card *ngIf="certificateStatus && !hasCertificate" class="info-card" style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; margin-bottom: 1rem;">
+    <mat-card-content>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <mat-icon style="color: #0c5460;">info</mat-icon>
+        <span style="color: #0c5460;">
+          No active certificate found. Please use Aadhaar e-Sign or contact admin to upload your certificate.
+        </span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Signature Method Selection -->
+  <div class="method-selection">
+    <h3>Select Signature Method</h3>
+    <mat-radio-group [(ngModel)]="signatureMethod" class="signature-methods">
+      <mat-radio-button value="DSC" [disabled]="!hasCertificate">
+        <div class="method-option">
+          <mat-icon>verified_user</mat-icon>
+          <div>
+            <strong>Digital Signature Certificate (DSC)</strong>
+            <small *ngIf="!hasCertificate" style="color: #999; display: block;">Not available - No certificate uploaded</small>
+            <small *ngIf="hasCertificate && certificateStatus" style="color: #4caf50; display: block;">
+              Valid until: {{ certificateStatus.validUntil | date }}
+            </small>
+          </div>
+        </div>
+      </mat-radio-button>
+      
+      <mat-radio-button value="AADHAAR_OTP">
+        <div class="method-option">
+          <mat-icon>fingerprint</mat-icon>
+          <div>
+            <strong>Aadhaar e-Sign</strong>
+            <small style="color: #666; display: block;">Sign using Aadhaar OTP</small>
+          </div>
+        </div>
+      </mat-radio-button>
+      
+      <mat-radio-button value="BIOMETRIC" disabled>
+        <div class="method-option">
+          <mat-icon>touch_app</mat-icon>
+          <div>
+            <strong>Biometric</strong>
+            <small style="color: #999; display: block;">Coming soon</small>
+          </div>
+        </div>
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <mat-divider style="margin: 1.5rem 0;"></mat-divider>
+
+  <!-- DSC Method -->
+  <div *ngIf="signatureMethod === 'DSC'" class="method-section">
+    <h3>Certificate Password</h3>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Enter Certificate Password</mat-label>
+      <input 
+        matInput 
+        type="password" 
+        [(ngModel)]="certificatePassword"
+        placeholder="Enter your DSC password"
+        [disabled]="loading">
+      <mat-icon matSuffix>lock</mat-icon>
+      <mat-hint>Enter the password to unlock your digital certificate</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <!-- Aadhaar Method -->
+  <div *ngIf="signatureMethod === 'AADHAAR_OTP'" class="method-section">
+    <h3>Aadhaar Verification</h3>
+    
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+      <mat-label>Aadhaar Number</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="aadhaarNumber"
+        placeholder="Enter 12-digit Aadhaar number"
+        maxlength="12"
+        [disabled]="otpSent || loading">
+      <mat-icon matSuffix>badge</mat-icon>
+    </mat-form-field>
+    
+    <button 
+      mat-raised-button 
+      color="primary"
+      (click)="requestAadhaarOtp()"
+      [disabled]="aadhaarNumber.length !== 12 || otpSent || loading"
+      style="margin-bottom: 1rem;">
+      <mat-icon>send</mat-icon>
+      {{ loading && !otpSent ? 'Sending...' : 'Send OTP' }}
+    </button>
+    
+    <mat-form-field *ngIf="otpSent" appearance="outline" style="width: 100%;">
+      <mat-label>Enter OTP</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="otp"
+        placeholder="Enter 6-digit OTP"
+        maxlength="6"
+        [disabled]="loading">
+      <mat-icon matSuffix>vpn_key</mat-icon>
+      <mat-hint>OTP sent to your registered mobile number</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <mat-divider style="margin: 1.5rem 0;"></mat-divider>
+
+  <!-- Signature Details -->
+  <div class="signature-details">
+    <h3>Signature Details</h3>
+    
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 1rem;">
+      <mat-label>Reason for Signing</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="reason"
+        placeholder="e.g., Document finalized and approved"
+        [disabled]="loading">
+      <mat-icon matSuffix>edit</mat-icon>
+    </mat-form-field>
+    
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Location (Optional)</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="location"
+        placeholder="e.g., District Court, Imphal East"
+        [disabled]="loading">
+      <mat-icon matSuffix>location_on</mat-icon>
+      <mat-hint>Location where document is being signed</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <!-- Document Preview -->
+  <mat-divider style="margin: 1.5rem 0;"></mat-divider>
+  
+  <div class="document-preview">
+    <h3>Document Preview</h3>
+    <div class="preview-content" [innerHTML]="data.documentPreview || data.documentContent | slice:0:500"></div>
+    <small style="color: #666;">Preview shows first 500 characters. Full document will be signed.</small>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button 
+    mat-button 
+    (click)="cancel()"
+    [disabled]="loading">
+    Cancel
+  </button>
+  
+  <button 
+    mat-raised-button 
+    color="accent"
+    (click)="sign()"
+    [disabled]="!canSign()">
+    <mat-icon>how_to_reg</mat-icon>
+    {{ loading ? 'Signing...' : 'Sign Document' }}
+  </button>
+</mat-dialog-actions>
