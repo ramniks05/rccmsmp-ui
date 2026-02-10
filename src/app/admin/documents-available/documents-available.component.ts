@@ -11,10 +11,7 @@ export interface DocumentAvailable {
   title: string;
   url: string;
   createdAt?: Date;
-  publishedOn?: string;
 }
-
-// You'll need to create this service
 
 @Component({
   selector: 'app-documents-available',
@@ -59,7 +56,6 @@ export class DocumentsAvailableComponent implements OnInit {
       title: ['', Validators.required],
       uploadType: ['file'],
       url: [''],
-      publishedOn: [],
     });
   }
 
@@ -293,7 +289,6 @@ export class DocumentsAvailableComponent implements OnInit {
     const formData = new FormData();
     formData.append('title', this.form.get('title')?.value);
     formData.append('url', this.selectedFile);
-    formData.append('publishedOn', '2026-02-10');
 
     this.service.uploadDocumentsAvailableFile(formData).subscribe({
       next: (response) => {
@@ -317,7 +312,6 @@ export class DocumentsAvailableComponent implements OnInit {
 
     formData.append('title', this.form.get('title')?.value);
     formData.append('url', this.form.get('url')?.value);
-    formData.append('publishedOn', '2026-02-10');
 
     const request$ =
       this.editMode && this.editId
@@ -363,7 +357,6 @@ export class DocumentsAvailableComponent implements OnInit {
       title: item.title,
       uploadType: 'url',
       url: item.url,
-      publishedOn: item.publishedOn ? new Date(item.publishedOn) : null,
     });
 
     this.onUploadTypeChange();

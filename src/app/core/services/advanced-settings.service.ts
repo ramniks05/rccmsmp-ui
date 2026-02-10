@@ -23,7 +23,6 @@ export interface DocumentAvailable {
   title: string;
   url: string;
   createdAt?: Date;
-  publishedOn?: string;
 }
 
 /* =======================

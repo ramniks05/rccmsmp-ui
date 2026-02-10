@@ -1808,3 +1808,521 @@ img.digital-logo {
     }
   }
 }
+// System Overview Component Styles - Angular 16 Compatible with Equal Heights
+
+.system-overview-container {
+  padding: 0;
+
+  // CSS Variables for theming
+  --primary: #1a56db;
+  --primary-dark: #0e3a8c;
+  --secondary: #0d9488;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+}
+
+// Equal Height Sections
+.full-height-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+
+  @media (min-width: 992px) {
+    min-height: 800px; // Ensures minimum height on desktop
+  }
+}
+
+// Section Header
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+// View All Button
+.view-all-btn {
+  background: white;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+// LEFT COLUMN - Data Visualization
+.data-viz-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 2rem;
+    align-self: flex-start;
+  }
+}
+
+.viz-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Make first viz-card flexible to fill space
+.flex-grow-card {
+  flex: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.viz-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: unset;
+  color: var(--text-primary);
+}
+
+// Circular Progress Chart
+.progress-ring-wrapper {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-circle {
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-value {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+// Mini Stats
+.mini-stat {
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  border-left: 3px solid var(--primary);
+  transition: all 0.3s ease;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    transform: translateX(4px);
+    border-left-width: 4px;
+  }
+}
+
+.mini-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.mini-stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+}
+
+// RIGHT COLUMN - Modern Cards
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--card-accent, var(--primary)), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
+    border-color: var(--card-accent, var(--primary));
+
+    &::before {
+      transform: scaleX(1);
+    }
+
+    .stat-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .stat-link {
+      gap: 0.6rem;
+      color: var(--primary-dark);
+    }
+  }
+
+  &.primary { --card-accent: var(--primary); }
+  &.secondary { --card-accent: var(--secondary); }
+  &.success { --card-accent: var(--success); }
+  &.warning { --card-accent: var(--warning); }
+  &.danger { --card-accent: var(--danger); }
+  &.info { --card-accent: var(--info); }
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card.primary .stat-icon {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: var(--primary);
+}
+
+.stat-card.secondary .stat-icon {
+  background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+  color: var(--secondary);
+}
+
+.stat-card.success .stat-icon {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: var(--success);
+}
+
+.stat-card.warning .stat-icon {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: var(--warning);
+}
+
+.stat-card.danger .stat-icon {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: var(--danger);
+}
+
+.stat-card.info .stat-icon {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: var(--info);
+}
+
+.stat-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+  margin-bottom: 1.75rem;
+  line-height: 1;
+}
+
+.stat-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 1.65rem;
+
+  &.positive {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &.negative {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  &.neutral {
+    background: #f3f4f6;
+    color: #4b5563;
+  }
+
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+.stat-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto; // Push footer to bottom of card
+}
+
+.stat-detail {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.stat-link {
+  font-size: 0.85rem;
+  color: var(--card-accent, var(--primary));
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+// Court Schedules Section
+.schedules-section {
+  margin-top: 2rem;
+}
+
+.schedule-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.schedule-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  color: white;
+  transition: all 0.4s ease;
+  cursor: pointer;
+
+  &.secondary-gradient {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(26, 86, 219, 0.3);
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  p {
+    opacity: 0.9;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-fade-in-delay {
+  animation: fadeInUp 0.6s ease-out 0.2s backwards;
+}
+
+.animate-card {
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-slide-up-delay {
+  animation: slideUp 0.5s ease-out 0.1s backwards;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .view-all-btn {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .full-height-section {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .stat-card {
+    padding: 1.25rem;
+  }
+
+  .viz-card {
+    padding: 1.5rem;
+  }
+}

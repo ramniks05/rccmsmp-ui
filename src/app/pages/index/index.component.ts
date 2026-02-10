@@ -8,6 +8,24 @@ import {
 } from 'src/app/core/services/system-settings.service';
 import { Observable, Subscription } from 'rxjs';
 
+interface StatCard {
+  title: string;
+  value: string;
+  icon: string;
+  trend: {
+    value: string;
+    direction: 'positive' | 'negative' | 'neutral';
+  };
+  detail: string;
+  colorClass: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+}
+
+interface MiniStat {
+  label: string;
+  value: string;
+  color: string;
+}
+
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
@@ -27,6 +45,76 @@ export class IndexComponent implements OnInit {
   activeBanner = 0;
   whatsNewList: WhatsNewItem[] = [];
 
+    // Main statistics cards
+    statsCards: StatCard[] = [
+      {
+        title: 'Total Users',
+        value: '26.14 M',
+        icon: 'fa-users',
+        trend: { value: '12.5% increase', direction: 'positive' },
+        detail: 'Last updated: Today',
+        colorClass: 'primary'
+      },
+      {
+        title: 'Courts On Boarded',
+        value: '3,073',
+        icon: 'fa-building',
+        trend: { value: '243 this month', direction: 'positive' },
+        detail: '98% coverage',
+        colorClass: 'secondary'
+      },
+      {
+        title: 'Total Cases',
+        value: '27.39 M',
+        icon: 'fa-gavel',
+        trend: { value: '8.3% growth', direction: 'positive' },
+        detail: 'All time cases',
+        colorClass: 'info'
+      },
+      {
+        title: 'Pending Cases',
+        value: '1.25 M',
+        icon: 'fa-hourglass-half',
+        trend: { value: '5.2% decrease', direction: 'negative' },
+        detail: 'Requires attention',
+        colorClass: 'warning'
+      },
+      {
+        title: 'Decided Cases',
+        value: '0.21 M',
+        icon: 'fa-check-circle',
+        trend: { value: '18.7% increase', direction: 'positive' },
+        detail: 'This quarter',
+        colorClass: 'success'
+      },
+      {
+        title: 'Cause List',
+        value: '0.06 M',
+        icon: 'fa-list-alt',
+        trend: { value: 'Stable', direction: 'neutral' },
+        detail: 'Scheduled hearings',
+        colorClass: 'danger'
+      }
+    ];
+
+    // Left sidebar mini stats
+    healthMetrics: MiniStat[] = [
+      { label: 'Active Courts', value: '3,073', color: 'var(--primary)' },
+      { label: 'Cases Resolved', value: '210K', color: 'var(--success)' },
+      { label: 'Avg. Resolution Time', value: '45 Days', color: 'var(--warning)' }
+    ];
+
+    keyMetrics: MiniStat[] = [
+      { label: 'Success Rate', value: '94.3%', color: 'var(--info)' },
+      { label: 'User Satisfaction', value: '4.7/5', color: 'var(--secondary)' },
+      { label: 'Critical Cases', value: '1,234', color: 'var(--danger)' }
+    ];
+
+    // Progress ring values
+    progressPercentage: number = 75;
+    progressStrokeDasharray: number = 440;
+    progressStrokeDashoffset: number = 440;
+
   constructor(
     private router: Router,
     private settingsService: SystemSettingsService,
@@ -37,6 +125,7 @@ export class IndexComponent implements OnInit {
   ngOnInit(): void {
     this.setThemeColor();
     this.animateStatistics();
+    this.animateProgressRing();
     this.subscription = this.settings$.subscribe((settings) => {
       this.settings = settings;
       // Start banner rotation after settings are loaded
@@ -113,5 +202,44 @@ export class IndexComponent implements OnInit {
       return `Government of ${this.settings.stateName}`;
     }
     return 'Digital Court Management Platform';
+  }
+
+
+  animateProgressRing(): void {
+    setTimeout(() => {
+      const circumference = 2 * Math.PI * 70;
+      const offset = circumference - (this.progressPercentage / 100) * circumference;
+      this.progressStrokeDashoffset = offset;
+    }, 500);
+  }
+
+  getTrendIcon(direction: string): string {
+    switch(direction) {
+      case 'positive': return 'fa-arrow-up';
+      case 'negative': return 'fa-arrow-down';
+      default: return 'fa-minus';
+    }
+  }
+
+  viewDetails(cardTitle: string): void {
+    console.log(`Viewing details for: ${cardTitle}`);
+    // Implement your navigation or modal logic here
+    // Example: this.router.navigate(['/details', cardTitle]);
+  }
+
+  navigateToUpdates(): void {
+    console.log('Navigate to all updates');
+    // Implement navigation logic
+    // Example: this.router.navigate(['/updates']);
+  }
+
+  navigateToCauseLists(): void {
+    console.log('Navigate to cause lists');
+    // Implement navigation logic
+  }
+
+  navigateToHearings(): void {
+    console.log('Navigate to hearings');
+    // Implement navigation logic
   }
 }
