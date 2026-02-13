@@ -21,10 +21,10 @@ export class WhatsNewComponent implements OnInit {
   form: FormGroup;
   saving = false;
   editMode = false;
-  editId: number | null = null;
+  editId: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-
+  secondEditId: any;
   constructor(
     private fb: FormBuilder,
     private service: AdvancedSettingsService,
@@ -88,10 +88,9 @@ export class WhatsNewComponent implements OnInit {
 
     this.saving = true;
     const payload: WhatsNew = this.form.value;
-
     const request$ =
       this.editMode && this.editId
-        ? this.service.updateWhatsNew(this.editId, payload)
+        ? this.service.updateWhatsNew(this.editId, payload, this.secondEditId)
         : this.service.createWhatsNew(payload);
 
     request$.subscribe({
@@ -128,8 +127,8 @@ export class WhatsNewComponent implements OnInit {
 
   edit(item: WhatsNew): void {
     this.editMode = true;
-    this.editId = item.id!;
-
+    this.editId = item.itemId!;
+    this.secondEditId = item.whatsNewId!;
     this.form.patchValue({
       publishedDate: item.publishedDate,
       title: item.title,
@@ -138,30 +137,29 @@ export class WhatsNewComponent implements OnInit {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    this.snack.open('Editing entry — update and save', 'Close', {
-      duration: 2000
-    });
   }
 
   /* =====================
      DELETE
   ===================== */
 
-  delete(id: number): void {
-    if (!id) return;
-
+  delete(item:any): void {
+    // if (!id) return;
+    console.log(item);
+    this.editId = item.itemId!;
+    this.secondEditId = item.whatsNewId!;
     if (!confirm('Are you sure you want to delete this entry?')) return;
 
-    this.service.deleteWhatsNew(id).subscribe({
+    this.service.deleteWhatsNew(this.editId, this.secondEditId).subscribe({
       next: () => {
         this.snack.open('Entry deleted successfully', 'Close', {
           duration: 2000,
           panelClass: ['success-snackbar']
         });
 
-        if (this.editId === id) {
-          this.cancelEdit();
-        }
+        // if (this.editId === id) {
+        //   this.cancelEdit();
+        // }
 
         this.loadData();
       },

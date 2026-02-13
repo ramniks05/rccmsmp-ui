@@ -21,7 +21,7 @@ export interface ApiResponse<T> {
 export interface DocumentAvailable {
   id?: number;
   title: string;
-  url: string;
+  filePath: string;
   createdAt?: Date;
 }
 
@@ -30,10 +30,11 @@ export interface DocumentAvailable {
 ======================= */
 
 export interface WhatsNew {
-  id?: number;
+  itemId?: number;
   publishedDate: string;
   title: string;
   pdfUrl: string;
+  whatsNewId?: number;
 }
 
 @Injectable({
@@ -115,7 +116,7 @@ export class AdvancedSettingsService {
 
   deleteDocumentsAvailable(id: number): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(
-      `${this.apiUrl}${this.documentsPath}/${id}`,
+      `${this.apiUrl}${this.whatsNewPath}/document/delete/${id}`,
       { headers: this.getFormDataHeaders() },
     );
   }
@@ -152,17 +153,18 @@ export class AdvancedSettingsService {
   updateWhatsNew(
     id: number,
     payload: WhatsNew,
+    secondEditId: number
   ): Observable<ApiResponse<WhatsNew>> {
     return this.http.put<ApiResponse<WhatsNew>>(
-      `${this.apiUrl}${this.whatsNewPath}/update/whats-new/${id}`,
+      `${this.apiUrl}${this.whatsNewPath}/update/whats-new/${secondEditId}/${id}`,
       payload,
       { headers: this.getAuthHeaders() },
     );
   }
 
-  deleteWhatsNew(id: number): Observable<ApiResponse<null>> {
+  deleteWhatsNew(id: number, secondEditId: number): Observable<ApiResponse<null>> {
     return this.http.delete<ApiResponse<null>>(
-      `${this.apiUrl}${this.whatsNewPath}/delete/whats-new/${id}`,
+      `${this.apiUrl}${this.whatsNewPath}/delete/whats-new/${secondEditId}/${id}`,
       { headers: this.getAuthHeaders() },
     );
   }
