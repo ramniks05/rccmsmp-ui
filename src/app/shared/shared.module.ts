@@ -43,6 +43,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { RichTextEditorComponent } from './components/rich-text-editor/rich-text-editor.component';
+import { RepeatableSectionComponent } from './components/repeatable-section/repeatable-section.component';
+import { DynamicFilesFieldComponent } from './components/dynamic-files-field/dynamic-files-field.component';
 
 // Pipes
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
@@ -63,7 +65,9 @@ import { ViewDialogComponent } from './components/view-dialog/view-dialog.compon
     JsonParsePipe,
     RichTextEditorComponent,
     ViewDialogComponent,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    RepeatableSectionComponent,
+    DynamicFilesFieldComponent,
   ],
   imports: [
     CommonModule,
@@ -116,6 +120,8 @@ import { ViewDialogComponent } from './components/view-dialog/view-dialog.compon
     MaskEmailPipe,
     JsonParsePipe,
     RichTextEditorComponent,
+    RepeatableSectionComponent,
+    DynamicFilesFieldComponent,
 
     // Angular / Router
     RouterModule,
