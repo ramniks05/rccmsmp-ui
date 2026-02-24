@@ -47,6 +47,8 @@ import { RichTextEditorComponent } from './components/rich-text-editor/rich-text
 // Pipes
 import { MaskEmailPipe } from '../core/pipes/mask-email.pipe';
 import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
+import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+import { ViewDialogComponent } from './components/view-dialog/view-dialog.component';
 
 /**
  * Shared Module
@@ -60,13 +62,15 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     BreadcrumbsComponent,
     JsonParsePipe,
     RichTextEditorComponent,
+    ViewDialogComponent,
+    DeleteDialogComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
-    
+
     // Angular Material
     MatToolbarModule,
     MatIconModule,
@@ -95,7 +99,7 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
     MatTabsModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    
+
     // Third Party
     NgChartsModule,
     QuillModule,
@@ -152,6 +156,8 @@ import { JsonParsePipe } from '../core/pipes/json-parse.pipe';
 
     // Charts
     NgChartsModule,
+    ViewDialogComponent,
+    DeleteDialogComponent
   ],
 })
 export class SharedModule {}

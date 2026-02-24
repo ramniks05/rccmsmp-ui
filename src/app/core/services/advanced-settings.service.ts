@@ -4,19 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
 
-/* =======================
-   COMMON API RESPONSE
-======================= */
 
 export interface ApiResponse<T> {
   success?: boolean;
   data: T;
   message?: string;
 }
-
-/* =======================
-   DOCUMENTS AVAILABLE
-======================= */
 
 export interface DocumentAvailable {
   id?: number;
@@ -25,9 +18,6 @@ export interface DocumentAvailable {
   createdAt?: Date;
 }
 
-/* =======================
-   WHATS NEW
-======================= */
 
 export interface WhatsNew {
   itemId?: number;
@@ -52,10 +42,6 @@ export class AdvancedSettingsService {
     private authService: AuthService,
   ) {}
 
-  /* =======================
-     AUTH HEADERS
-  ======================= */
-
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('adminToken');
     return new HttpHeaders({
@@ -70,10 +56,6 @@ export class AdvancedSettingsService {
       Authorization: `Bearer ${token}`,
     });
   }
-
-  /* =====================================================
-     DOCUMENTS AVAILABLE APIs
-  ===================================================== */
 
   getAllDocumentsAvailable(): Observable<ApiResponse<DocumentAvailable[]>> {
     return this.http.get<ApiResponse<DocumentAvailable[]>>(
@@ -166,6 +148,12 @@ export class AdvancedSettingsService {
     return this.http.delete<ApiResponse<null>>(
       `${this.apiUrl}${this.whatsNewPath}/delete/whats-new/${secondEditId}/${id}`,
       { headers: this.getAuthHeaders() },
+    );
+  }
+
+  getCaseSummary(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(
+      `${this.apiUrl}/dashboard/case-summary`
     );
   }
 }

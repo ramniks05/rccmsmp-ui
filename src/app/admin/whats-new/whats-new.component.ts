@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatPaginator } from '@angular/material/paginator';
@@ -7,6 +7,8 @@ import {
   AdvancedSettingsService,
   WhatsNew
 } from 'src/app/core/services/advanced-settings.service';
+import { DeleteDialogComponent } from 'src/app/shared/components/delete-dialog/delete-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-whats-new',
@@ -24,11 +26,13 @@ export class WhatsNewComponent implements OnInit {
   editId: any;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('topSection') topSection!: ElementRef;
   secondEditId: any;
   constructor(
     private fb: FormBuilder,
     private service: AdvancedSettingsService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.form = this.initForm();
   }
@@ -121,6 +125,33 @@ export class WhatsNewComponent implements OnInit {
     });
   }
 
+  deleteWhatsNew(data: any): void {
+    const dialogData: any = {
+      title: `${data.title}`,
+      message: `Are you sure you want to delete "${data.pdfUrl}"?`,
+      subMessage: ` This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      itemId: data.itemId,
+      whatsNewId: data.whatsNewId
+    };
+
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: "380px",
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadData();
+      }
+    });
+  }
+
+  scrollToTop() {
+    this.topSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+  }
+
   /* =====================
      EDIT
   ===================== */
@@ -135,7 +166,7 @@ export class WhatsNewComponent implements OnInit {
       pdfUrl: item.pdfUrl
     });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToTop();
 
   }
 

@@ -1,10 +1,10 @@
 /* Global Styles - Government Theme */
 
 // Import Angular Material prebuilt theme
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 // Import custom theme customizations
-@import './styles/theme';
+@import "./styles/theme";
 
 // Custom Government Theme Variables
 :root {
@@ -26,9 +26,10 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: var(--background);
 }
 
@@ -55,20 +56,44 @@ html, body {
   text-align: center;
 }
 
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-.mt-4 { margin-top: 32px; }
+.mt-1 {
+  margin-top: 8px;
+}
+.mt-2 {
+  margin-top: 16px;
+}
+.mt-3 {
+  margin-top: 24px;
+}
+.mt-4 {
+  margin-top: 32px;
+}
 
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
-.mb-4 { margin-bottom: 32px; }
+.mb-1 {
+  margin-bottom: 8px;
+}
+.mb-2 {
+  margin-bottom: 16px;
+}
+.mb-3 {
+  margin-bottom: 24px;
+}
+.mb-4 {
+  margin-bottom: 32px;
+}
 
-.p-1 { padding: 8px; }
-.p-2 { padding: 16px; }
-.p-3 { padding: 24px; }
-.p-4 { padding: 32px; }
+.p-1 {
+  padding: 8px;
+}
+.p-2 {
+  padding: 16px;
+}
+.p-3 {
+  padding: 24px;
+}
+.p-4 {
+  padding: 32px;
+}
 
 // Responsive Utilities
 @media (max-width: 768px) {
@@ -97,7 +122,7 @@ button {
   mat-icon:first-child:not(:only-child) {
     margin-right: 6px !important;
   }
-  
+
   mat-icon:last-child:not(:only-child) {
     margin-left: 6px !important;
   }
@@ -109,12 +134,13 @@ table.mat-table {
   .mat-mdc-cell,
   .mat-cell {
     vertical-align: middle;
-    
-    button, a {
+
+    button,
+    a {
       white-space: nowrap;
     }
   }
-  
+
   .mat-mdc-header-cell,
   .mat-header-cell {
     white-space: nowrap;
@@ -138,8 +164,10 @@ table.mat-table {
 
 // Global table fixes
 table {
-  th, td {
-    button, a {
+  th,
+  td {
+    button,
+    a {
       mat-icon {
         vertical-align: middle;
         margin: 0;
@@ -150,7 +178,7 @@ table {
 
 // Material Icons Fix - Ensure icons are visible
 mat-icon {
-  font-family: 'Material Icons' !important;
+  font-family: "Material Icons" !important;
   font-weight: normal !important;
   font-style: normal !important;
   font-size: 24px;
@@ -161,11 +189,11 @@ mat-icon {
   white-space: nowrap !important;
   word-wrap: normal !important;
   direction: ltr !important;
-  -webkit-font-feature-settings: 'liga' !important;
+  -webkit-font-feature-settings: "liga" !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'liga' !important;
-  
+  font-feature-settings: "liga" !important;
+
   // Ensure proper rendering
   vertical-align: middle;
   overflow: hidden;
@@ -176,7 +204,7 @@ mat-icon {
 .doc-icon-wrapper mat-icon,
 .docs-header mat-icon,
 .doc-item mat-icon {
-  font-family: 'Material Icons' !important;
+  font-family: "Material Icons" !important;
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
@@ -203,7 +231,11 @@ mat-icon {
     align-items: center;
     gap: 12px;
     padding: 20px 24px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--primary-color) 0%,
+      var(--primary-light) 100%
+    );
     color: white;
 
     mat-icon.header-icon {
@@ -273,7 +305,11 @@ mat-icon {
         transform: translateY(-4px);
 
         .service-icon-circle {
-          background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+          background: linear-gradient(
+            135deg,
+            var(--primary-color) 0%,
+            var(--primary-light) 100%
+          );
           transform: scale(1.1);
 
           mat-icon {
@@ -331,7 +367,11 @@ mat-icon {
     transform: translateY(-4px);
 
     .service-icon-circle {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+      background: linear-gradient(
+        135deg,
+        var(--primary-color) 0%,
+        var(--primary-light) 100%
+      );
       transform: scale(1.1);
 
       mat-icon {
@@ -400,3 +440,28 @@ mat-icon {
   }
 }
 
+/* High Contrast Mode */
+.high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.high-contrast a {
+  color: #ffff00 !important;
+}
+
+.high-contrast button {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+/* Text Spacing */
+.text-spacing {
+  line-height: 1.8 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+.text-spacing p {
+  margin-bottom: 1.5em !important;
+}

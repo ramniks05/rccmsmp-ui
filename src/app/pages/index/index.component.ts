@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { HomeData, Service, WhatsNewItem } from 'src/assets/home-model';
-import { HOME_DATA, WHATS_NEW_DATA } from '../../../assets/mock-home-data';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { HomeData, Service } from 'src/assets/home-model';
+import { HOME_DATA } from '../../../assets/mock-home-data';
 import { Router } from '@angular/router';
 import {
   SystemSettings,
@@ -41,6 +41,8 @@ interface MiniStat {
   styleUrls: ['./index.component.scss'],
 })
 export class IndexComponent implements OnInit {
+  @ViewChild('mainContent') mainContent!: ElementRef;
+  @ViewChild('liveRegion') liveRegion!: ElementRef;
   settings$: Observable<SystemSettings | null>;
   settings: SystemSettings | null = null;
   private subscription?: Subscription;
@@ -128,17 +130,29 @@ export class IndexComponent implements OnInit {
   progressPercentage: number = 75;
   progressStrokeDasharray: number = 440;
   progressStrokeDashoffset: number = 440;
+  caseSummaryData: any[] = [];
 
   constructor(
     private router: Router,
     private settingsService: SystemSettingsService,
     private advancedSettingsService: AdvancedSettingsService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
   ) {
     this.settings$ = this.settingsService.getSettings();
   }
 
   ngOnInit(): void {
+    const savedZoom = localStorage.getItem('appZoom');
+    if (savedZoom) {
+      this.setZoom(Number(savedZoom));
+    }
+    if (localStorage.getItem('highContrast') === 'true') {
+      document.body.classList.add('high-contrast');
+    }
+
+    if (localStorage.getItem('textSpacing') === 'true') {
+      document.body.classList.add('text-spacing');
+    }
     this.setThemeColor();
     this.animateStatistics();
     this.animateProgressRing();
@@ -149,12 +163,70 @@ export class IndexComponent implements OnInit {
         this.startBannerRotation();
       }
     });
+    this.getCaseSummary();
     this.getWhatsNewData();
     this.getDocumentsAvailableList();
   }
 
+  announceScreenReaderInfo() {
+    const message =
+      'Screen reader mode activated. Use tab key to navigate through interactive elements.';
+
+    // Clear first (important)
+    this.liveRegion.nativeElement.textContent = '';
+
+    setTimeout(() => {
+      this.liveRegion.nativeElement.textContent = message;
+    }, 100);
+  }
+  toggleTextSpacing() {
+    document.body.classList.toggle('text-spacing');
+
+    const enabled = document.body.classList.contains('text-spacing');
+    localStorage.setItem('textSpacing', enabled ? 'true' : 'false');
+  }
+
+  toggleHighContrast() {
+    document.body.classList.toggle('high-contrast');
+
+    const enabled = document.body.classList.contains('high-contrast');
+    localStorage.setItem('highContrast', enabled ? 'true' : 'false');
+  }
+
+  setZoom(percentage: number) {
+    const zoomFactor = percentage / 100;
+
+    document.documentElement.style.fontSize = `${16 * zoomFactor}px`;
+
+    localStorage.setItem('appZoom', percentage.toString());
+  }
+
+  scrollToMain() {
+    this.mainContent.nativeElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+
+    // Accessibility focus
+    this.mainContent.nativeElement.focus();
+  }
+
+  getCaseSummary(): void {
+    this.advancedSettingsService.getCaseSummary().subscribe({
+      next: (res) => {
+        this.caseSummaryData = res.data ?? [];
+      },
+      error: (err) => {
+        console.error('Error fetching case summary:', err);
+        this.snack.open('Failed to load case summary', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+      },
+    });
+  }
+
   getWhatsNewData(): void {
-    // this.whatsNewList = WHATS_NEW_DATA;
     this.advancedSettingsService.getAllWhatsNew().subscribe({
       next: (res) => {
         this.whatsNewList = res.data ?? [];
@@ -255,9 +327,6 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['registration']);
   }
 
-  /**
-   * Check if banners are available
-   */
   hasBanners(): boolean {
     return !!(
       this.settings &&
@@ -266,9 +335,6 @@ export class IndexComponent implements OnInit {
     );
   }
 
-  /**
-   * Get fallback banner text
-   */
   getFallbackBannerText(): string {
     if (this.settings && this.settings.stateName) {
       return `Government of ${this.settings.stateName}`;

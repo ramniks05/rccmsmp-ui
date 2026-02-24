@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  ElementRef,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatPaginator } from '@angular/material/paginator';
@@ -18,7 +24,6 @@ export interface DocumentAvailable {
   styleUrls: ['./documents-available.component.scss'],
 })
 export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
-
   displayedColumns = ['icon', 'title', 'publishedOn', 'document', 'actions'];
   dataSource = new MatTableDataSource<DocumentAvailable>([]);
 
@@ -33,16 +38,17 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
   maxFileSize = 10 * 1024 * 1024; // 10MB
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('topSection') topSection!: ElementRef;
 
   constructor(
     private fb: FormBuilder,
     private service: AdvancedSettingsService,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
   ) {
     this.form = this.fb.group({
       title: ['', Validators.required],
       uploadType: ['file'],
-      url: ['', [Validators.pattern('https?://.+')]]
+      url: ['', [Validators.pattern('https?://.+')]],
     });
   }
 
@@ -56,6 +62,9 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  scrollToTop() {
+    this.topSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+  }
   /* ================= LOAD ================= */
 
   loadData(): void {
@@ -64,8 +73,10 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
         this.dataSource.data = res?.data ?? [];
       },
       error: () => {
-        this.snack.open('Failed to load documents', 'Close', { duration: 3000 });
-      }
+        this.snack.open('Failed to load documents', 'Close', {
+          duration: 3000,
+        });
+      },
     });
   }
 
@@ -76,10 +87,12 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     this.selectedFile = null;
 
     if (this.uploadType === 'url') {
-      this.form.get('url')?.setValidators([
-        Validators.required,
-        Validators.pattern('https?://.+')
-      ]);
+      this.form
+        .get('url')
+        ?.setValidators([
+          Validators.required,
+          Validators.pattern('https?://.+'),
+        ]);
     } else {
       this.form.get('url')?.clearValidators();
     }
@@ -111,13 +124,17 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     const ext = fileName.split('.').pop()?.toLowerCase();
 
     switch (ext) {
-      case 'pdf': return 'picture_as_pdf';
+      case 'pdf':
+        return 'picture_as_pdf';
       case 'doc':
-      case 'docx': return 'description';
+      case 'docx':
+        return 'description';
       case 'png':
       case 'jpg':
-      case 'jpeg': return 'image';
-      default: return 'insert_drive_file';
+      case 'jpeg':
+        return 'image';
+      default:
+        return 'insert_drive_file';
     }
   }
 
@@ -133,13 +150,17 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     const ext = url?.split('.').pop()?.toLowerCase()?.split('?')[0];
 
     switch (ext) {
-      case 'pdf': return 'picture_as_pdf';
+      case 'pdf':
+        return 'picture_as_pdf';
       case 'doc':
-      case 'docx': return 'description';
+      case 'docx':
+        return 'description';
       case 'png':
       case 'jpg':
-      case 'jpeg': return 'image';
-      default: return 'insert_drive_file';
+      case 'jpeg':
+        return 'image';
+      default:
+        return 'insert_drive_file';
     }
   }
 
@@ -151,7 +172,9 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
 
   save(): void {
     if (this.form.invalid) {
-      this.snack.open('Please fill required fields', 'Close', { duration: 3000 });
+      this.snack.open('Please fill required fields', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 
@@ -176,12 +199,12 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     if (this.editMode && this.editId) {
       this.service.updateDocumentsAvailable(this.editId, formData).subscribe({
         next: () => this.afterSave('Document updated successfully'),
-        error: () => this.handleError('Failed to update document')
+        error: () => this.handleError('Failed to update document'),
       });
     } else {
       this.service.createDocumentsAvailable(formData).subscribe({
         next: () => this.afterSave('Document created successfully'),
-        error: () => this.handleError('Failed to create document')
+        error: () => this.handleError('Failed to create document'),
       });
     }
   }
@@ -195,12 +218,11 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
     this.form.patchValue({
       title: element.title,
       uploadType: 'url',
-      url: element.filePath
+      url: element.filePath,
     });
 
     this.uploadType = 'url';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToTop();
   }
 
   /* ================= DELETE ================= */
@@ -210,12 +232,16 @@ export class DocumentsAvailableComponent implements OnInit, AfterViewInit {
 
     this.service.deleteDocumentsAvailable(id).subscribe({
       next: () => {
-        this.snack.open('Document deleted successfully', 'Close', { duration: 3000 });
+        this.snack.open('Document deleted successfully', 'Close', {
+          duration: 3000,
+        });
         this.loadData();
       },
       error: () => {
-        this.snack.open('Failed to delete document', 'Close', { duration: 3000 });
-      }
+        this.snack.open('Failed to delete document', 'Close', {
+          duration: 3000,
+        });
+      },
     });
   }
 

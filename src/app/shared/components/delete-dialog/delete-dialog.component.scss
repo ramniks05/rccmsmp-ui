@@ -1,0 +1,38 @@
+.delete-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 5px;
+  margin: 0;
+
+  .icon-wrapper {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border-radius: 50%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.delete-content {
+  padding: 2px 24px 16px;
+
+  .main-message {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .sub-message {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+  }
+}
+
+.delete-actions {
+  padding: 8px 24px 16px;
+  gap: 10px;
+}
